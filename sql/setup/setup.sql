@@ -18,3 +18,7 @@ CREATE OR REPLACE SCHEMA bronze;
 CREATE OR REPLACE SCHEMA silver;
 CREATE OR REPLACE SCHEMA gold;
 
+--Declaring stage for our Data to Land 
+USE SCHEMA raw;
+CREATE OR REPLACE STAGE ecom_stage;
+
