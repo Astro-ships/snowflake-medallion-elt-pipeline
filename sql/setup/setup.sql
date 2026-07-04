@@ -1,0 +1,12 @@
+
+--Creating a virtual warehouse with the following parameter;
+CREATE OR REPLACE WAREHOUSE compute_wh
+WAREHOUSE_SIZE ='small'
+INITIALLY_SUSPENDED=TRUE
+MIN_CLUSTER_COUNT=1
+MAX_CLUSTER_COUNT=4
+AUTO_SUSPEND=60
+AUTO_RESUME=TRUE
+SCALING_POLICY=standard;
+
+--Creating Data
