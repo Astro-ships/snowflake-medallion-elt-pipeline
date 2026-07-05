@@ -18,3 +18,9 @@ SELECT
         UPPER("geolocation_city") as geolocation_city,
         "geolocation_state"
 FROM RAW.GEOLOCATION;
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT *
+FROM bronze.geolocation
+LIMIT 10;
