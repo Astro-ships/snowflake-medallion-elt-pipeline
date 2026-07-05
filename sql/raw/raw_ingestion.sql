@@ -449,3 +449,11 @@ ON_ERROR=CONTINUE;
 SELECT *
 FROM RAW.PRODUCT_CATEGORY
 LIMIT 10;
+
+
+--===============================================================================================
+-- Verify all tables exist against the files located in stage
+--===============================================================================================
+
+ls@ecom_stage;
+SHOW TABLES;
