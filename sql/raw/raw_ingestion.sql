@@ -455,10 +455,10 @@ LIMIT 10;
 -- Verify all tables exist against the files located in stage
 --===============================================================================================
 
-ls@ecom_stage;
-SHOW TABLES;\
+lIST@ecom_stage;
+SHOW TABLES;
 
---===============================================================================================
--- All data Successfully ingested into RAW SCHEMA
---===============================================================================================
-
+-- ==========================================================
+-- RAW layer ingestion completed successfully
+-- All source datasets have been loaded into the RAW schema.
+-- ==========================================================
