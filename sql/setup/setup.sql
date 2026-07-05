@@ -25,9 +25,9 @@ CREATE OR REPLACE SCHEMA gold;
 -- ==========================================================
 -- Create an internal stage for raw source files
 -- ==========================================================
-USE WAREHOUSE
+USE WAREHOUSE;
 USE DATABASE ecommerce_db;
-USE SCHEMA raw;
+USE SCHEMA RAW;
 CREATE OR REPLACE STAGE ecom_stage;
 -- ==========================================================
 -- THE FILE FORMAT THE DATA WILL USE TO PARSE INTO TABLE
