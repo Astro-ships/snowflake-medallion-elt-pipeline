@@ -44,3 +44,33 @@ USING TEMPLATE(
                 )
 );
 
+--Now that the table exists, Load data into it using the command.
+
+DESC FILE FORMAT csv_format;
+
+--Create a new file format.
+
+CREATE OR REPLACE FILE FORMAT CSV_FORMAT
+TYPE=CSV 
+SKIP_HEADER=1
+FIELD_OPTIONALLY_ENCLOSED_BY='"';
+
+--Copy files from stage into raw.customer: 
+--1: First Validare Errors if exists,
+COPY INTO raw.customers 
+FROM @ecom_stage/olist_customers_dataset.csv.gz
+FILE_FORMAT='CSV_FORMAT'
+VALIDATION_MODE=RETURN_ERRORS;
+
+--2:copy into table
+
+COPY INTO raw.customers
+FROM @ecom_stage/olist_customers_dataset.csv.gz
+FILE_FORMAT='CSV_FORMAT'
+ON_ERROR=continue;
+
+-- Confirm data
+
+SELECT * 
+FROM raw.customers
+LIMIT 10;
