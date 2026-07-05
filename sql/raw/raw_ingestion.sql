@@ -1,25 +1,39 @@
---Creating environment 
+-- ==========================================================
+-- Configure Snowflake session
+-- ==========================================================
+
 USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA raw;
  
- --Verifying stage 
- SHOW STAGES;
+-- ==========================================================
+-- Verify that the required stage exists
+-- ==========================================================
 
--- Stage confirmed, Validating data
+ SHOW STAGES;
+-- ==========================================================
+-- Verify existing file formats
+-- ==========================================================
+
 ls@ecom_stage;
 
 SHOW FILE FORMATS;
 
--- Create a file format for bootstrapping table schemas from raw CSV files.
+--- ==========================================================
+-- Create a file format for schema inference
+-- This file format is used by INFER_SCHEMA to bootstrap
+-- column names and data types from the source CSV files.
+-- ==========================================================
+
 CREATE OR REPLACE FILE FORMAT infer_schema_csv
 TYPE = CSV 
 PARSE_HEADER = TRUE 
 FIELD_OPTIONALLY_ENCLOSED_BY='"';
 
-
---VALIDATING FILE_FORMAT
+-- ==========================================================
+-- Validate the inferred schema before creating the table
+-- ==========================================================
 
 SELECT *
 FROM TABLE(
@@ -30,8 +44,9 @@ FROM TABLE(
             )
 );
 
---Extract the blueprint of table to let snowflake create the table for us.
---1 Customer Table;
+-- ==========================================================
+-- Create the RAW.CUSTOMERS table using the inferred schema
+-- ==========================================================
 CREATE OR REPLACE TABLE RAW.CUSTOMERS 
 USING TEMPLATE(
                 SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
@@ -43,34 +58,86 @@ USING TEMPLATE(
                             )
                 )
 );
-
---Now that the table exists, Load data into it using the command.
+-- ==========================================================
+-- Verify the existing loading file format
+-- ==========================================================
 
 DESC FILE FORMAT csv_format;
 
---Create a new file format.
+-- ==========================================================
+-- Create the file format used for loading CSV data
+-- ==========================================================
 
 CREATE OR REPLACE FILE FORMAT CSV_FORMAT
 TYPE=CSV 
 SKIP_HEADER=1
 FIELD_OPTIONALLY_ENCLOSED_BY='"';
+-- ==========================================================
+-- Validate the staged data before loading
+-- This step returns parsing or data type errors without
+-- inserting any records into the table.
+-- ==========================================================
 
---Copy files from stage into raw.customer: 
---1: First Validare Errors if exists,
 COPY INTO raw.customers 
 FROM @ecom_stage/olist_customers_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
 VALIDATION_MODE=RETURN_ERRORS;
 
---2:copy into table
+-- ==========================================================
+-- Load customer data into the RAW layer
+-- ==========================================================
+
 
 COPY INTO raw.customers
 FROM @ecom_stage/olist_customers_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
 ON_ERROR=continue;
 
--- Confirm data
+-- ==========================================================
+-- Verify that the data has been loaded successfully
+-- ==========================================================
 
 SELECT * 
 FROM raw.customers
 LIMIT 10;
+
+-- ============================================
+-- Create RAW.GEOLOCATION using inferred schema
+-- ============================================
+CREATE OR REPLACE table raw.geolocation
+USING TEMPLATE(
+                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                FROM TABLE(
+                            infer_schema(
+                                LOCATION=>'@ecom_stage',
+                                FILE_FORMAT=>'infer_schema_csv',
+                                FILES=>('olist_geolocation_dataset.csv.gz')
+                            )
+                )
+)
+
+-- ============================================
+-- Validate staged data
+-- ============================================
+
+COPY INTO raw.geolocation
+FROM @ecom_stage/olist_geolocation_dataset.csv.gz
+FILE_FORMAT='CSV_FORMAT'
+VALIDATION_MODE=RETURN_ERRORS;
+
+
+-- ============================================
+-- Load data into RAW.GEOLOCATION
+-- ============================================
+FROM @ecom_stage/olist_geolocation_dataset.csv.gz
+FILE_FORMAT='CSV_FORMAT'
+ON_ERROR=CONTINUE;
+
+
+-- ============================================
+-- Verify loaded data
+-- ============================================
+
+SELECT *
+FROM raw.geolocation
+limit 10;
