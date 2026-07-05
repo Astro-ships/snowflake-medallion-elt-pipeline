@@ -12,11 +12,10 @@ USE SCHEMA raw;
 -- ==========================================================
 
  SHOW STAGES;
+
 -- ==========================================================
 -- Verify existing file formats
 -- ==========================================================
-
-ls@ecom_stage;
 
 SHOW FILE FORMATS;
 
@@ -137,7 +136,48 @@ ON_ERROR=CONTINUE;
 -- ============================================
 -- Verify loaded data
 -- ============================================
-
 SELECT *
 FROM raw.geolocation
 limit 10;
+
+
+-- ============================================
+-- Create RAW.order_items using inferred schema
+-- ============================================
+CREATE OR REPLACE TABLE RAW.order_items
+USING TEMPLATE(
+                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                FROM TABLE(
+                            INFER_SCHEMA(
+                                LOCATION=>'@ecom_stage',
+                                FILE_FORMAT=>'INFER_SCHEMA_CSV',
+                                FILES=>('olist_order_items_dataset.csv.gz')
+                            )
+                )
+
+);
+
+-- ============================================
+-- Validate staged data
+-- ============================================
+
+COPY INTO raw.order_items
+FROM @ecom_stage/olist_order_items_dataset.csv.gz
+FILE_FORMAT='CSV_FORMAT'
+VALIDATION_MODE=RETURN_ERRORS;
+
+-- ============================================
+-- Load data into RAW.order_items
+-- ============================================
+
+COPY INTO raw.order_items
+FROM  @ecom_stage/olist_order_items_dataset.csv.gz
+FILE_FORMAT='CSV_FORMAT'
+ON_ERROR=CONTINUE;
+
+-- ===============================================
+-- -- Verify that the data was loaded successfully.
+-- ===============================================
+SELECT * 
+FROM raw.order_items
+LIMIT 10;
