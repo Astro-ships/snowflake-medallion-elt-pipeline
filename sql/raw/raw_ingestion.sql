@@ -363,3 +363,45 @@ LIMIT 10;
 
 --===============================================================================================
 --===============================================================================================
+
+
+-- =============================================================
+-- Create the RAW.SELLERS table using the inferred schema
+-- =============================================================
+CREATE OR REPLACE TABLE RAW.SELLERS 
+USING TEMPLATE (
+                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                FROM TABLE(
+                            INFER_SCHEMA(
+                                LOCATION=>'@ecom_stage',
+                                FILE_FORMAT=>'INFER_SCHEMA_CSV',
+                                FILES=>('olist_sellers_dataset.csv.gz')
+
+                            )
+                )
+);
+
+-- =============================================================
+-- Validate staged data.
+-- =============================================================
+COPY INTO RAW.SELLERS
+FROM @ecom_stage/olist_sellers_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+VALIDATION_MODE=RETURN_ERRORS;
+
+-- =============================================================
+-- Load data into table RAW.SELLERS
+-- =============================================================
+
+COPY INTO RAW.SELLERS
+FROM @ecom_stage/olist_sellers_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+ON_ERROR=CONTINUE;
+
+-- =============================================================
+-- Verify that the data was loaded succefully
+-- =============================================================
+
+SELECT * 
+FROM RAW.ORDERS
+LIMIT 10;
