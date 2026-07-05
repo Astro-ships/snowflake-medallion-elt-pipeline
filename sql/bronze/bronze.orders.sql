@@ -20,3 +20,10 @@ SELECT
         "order_estimated_delivery_date"
 
 FROM RAW.ORDERS
+
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT *
+FROM bronze.orders
+LIMIT 10;
