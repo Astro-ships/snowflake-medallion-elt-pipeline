@@ -5,4 +5,16 @@ USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA BRONZE;
+-- ==========================================================
+-- CREATE CUSTOMER TABLE FROM RAW DATA
+-- ==========================================================
+
+CREATE OR REPLACE TABLE bronze.customers AS
+SELECT 
+        "customer_id", 
+        "customer_unique_id",
+        "customer_zip_code_prefix",
+        UPPER("customer_city") as customer_city,
+        "customer_state"
+FROM RAW.CUSTOMERS;
 
