@@ -17,4 +17,8 @@ SELECT
         UPPER("customer_city") as customer_city,
         "customer_state"
 FROM RAW.CUSTOMERS;
-
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT * FROM bronze.customers
+LIMIT 10;
