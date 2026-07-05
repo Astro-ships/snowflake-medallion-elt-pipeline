@@ -175,9 +175,52 @@ FROM  @ecom_stage/olist_order_items_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
 ON_ERROR=CONTINUE;
 
--- ===============================================
+-- ================================================
 -- -- Verify that the data was loaded successfully.
--- ===============================================
+-- ================================================
 SELECT * 
 FROM raw.order_items
+LIMIT 10;
+
+-- ==========================================================
+-- Create the RAW.ORDER_PAYMENTS table using the inferred schema
+-- ==========================================================
+ls@ecom_stage;
+
+CREATE OR REPLACE TABLE RAW.ORDER_PAYMENTS 
+USING TEMPLATE (
+                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                FROM TABLE(
+                            INFER_SCHEMA(
+                                LOCATION=>'@ecom_stage',
+                                FILE_FORMAT=>'infer_Schema_csv',
+                                FILES=>('olist_order_payments_dataset.csv.gz')
+                            )
+                )
+
+);
+
+-- ============================================
+-- Validate staged data
+-- ============================================
+
+COPY INTO RAW.ORDER_PAYMENTS
+FROM @ecom_stage/olist_order_payments_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+VALIDATION_MODE=RETURN_ERRORS;
+
+-- ============================================
+-- Load data into RAW.ORDER_PAYMENTS
+-- ============================================
+COPY INTO RAW.ORDER_PAYMENTS
+FROM @ecom_stage/olist_order_payments_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+ON_ERROR=CONTINUE;
+
+-- ================================================
+-- -- Verify that the data was loaded successfully.
+-- ================================================
+
+SELECT *
+FROM RAW.ORDER_PAYMENTS
 LIMIT 10;
