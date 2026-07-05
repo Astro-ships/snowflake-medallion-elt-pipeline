@@ -182,10 +182,10 @@ SELECT *
 FROM raw.order_items
 LIMIT 10;
 
--- ==========================================================
+-- =============================================================
 -- Create the RAW.ORDER_PAYMENTS table using the inferred schema
--- ==========================================================
-ls@ecom_stage;
+-- =============================================================
+
 
 CREATE OR REPLACE TABLE RAW.ORDER_PAYMENTS 
 USING TEMPLATE (
@@ -262,4 +262,44 @@ ON_ERROR=CONTINUE;
 
 SELECT *
 FROM RAW.PRODUCTS
+LIMIT 10;
+ls @ECOM_STAGE;
+-- =============================================================
+-- Create the RAW.ORDER_REVIEWS table using the inferred schema
+-- =============================================================
+
+CREATE OR REPLACE TABLE RAW.ORDERS_REVIEWS
+USING TEMPLATE(
+                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                FROM TABLE(
+                            INFER_SCHEMA(
+                                LOCATION=>'@ECOM_STAGE',
+                                FILE_FORMAT=>'infer_schema_csv',
+                                FILES=>('olist_order_reviews_dataset.csv.gz')
+                            )
+                )
+);
+
+-- =============================================================
+-- Validate staged data.
+-- =============================================================
+COPY INTO RAW.ORDERS_REVIEWS
+FROM @ecom_stage/olist_order_reviews_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+VALIDATION_MODE=RETURN_ERRORS;
+
+-- =============================================================
+-- Load data into table RAW.ORDER_REVIEWS
+-- =============================================================
+
+COPY INTO RAW.ORDERS_REVIEWS 
+FROM @ecom_stage/olist_order_reviews_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+ON_ERROR=CONTINUE;
+
+-- =============================================================
+-- Verify that the data was loaded succefully
+-- =============================================================
+SELECT * 
+FROM RAW.ORDERS_REVIEWS
 LIMIT 10;
