@@ -224,3 +224,42 @@ ON_ERROR=CONTINUE;
 SELECT *
 FROM RAW.ORDER_PAYMENTS
 LIMIT 10;
+
+-- ==========================================================
+-- Create the RAW.PRODUCTS table using the inferred schema
+-- ==========================================================
+
+CREATE OR REPLACE TABLE RAW.PRODUCTS 
+USING TEMPLATE(
+                SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*))
+                FROM TABLE(
+                            INFER_SCHEMA(
+                                LOCATION=>'@ecom_Stage',
+                                FILE_FORMAT=>'infer_schema_csv',
+                                FILES=>('olist_products_dataset.csv.gz')
+                            )
+                )
+);
+-- ==========================================================
+-- Validate staged data
+-- ==========================================================
+COPY INTO RAW.PRODUCTS
+FROM @ecom_stage/olist_products_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+VALIDATION_MODE=RETURN_ERRORS;
+
+-- ============================================
+-- Load data into RAW.PRODUCTS
+-- ============================================
+COPY INTO RAW.PRODUCTS
+FROM @ecom_stage/olist_products_dataset.csv.gz
+FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
+ON_ERROR=CONTINUE;
+
+-- ================================================
+-- -- Verify that the data was loaded successfully.
+-- ================================================
+
+SELECT *
+FROM RAW.PRODUCTS
+LIMIT 10;
