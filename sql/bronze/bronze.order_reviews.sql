@@ -18,3 +18,9 @@ SELECT
         "review_creation_date" AS review_creation_date,
         "review_answer_timestamp" AS review_answer_timestamp
 FROM RAW.ORDERS_REVIEWS
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT *
+FROM bronze.order_reviews
+LIMIT 10;
