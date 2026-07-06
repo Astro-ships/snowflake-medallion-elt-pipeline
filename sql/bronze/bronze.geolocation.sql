@@ -12,11 +12,11 @@ USE SCHEMA BRONZE;
 
 CREATE OR REPLACE TABLE bronze.geolocation AS
 SELECT 
-        "geolocation_zip_code_prefix", 
-        "geolocation_lat",
-        "geolocation_lng",
+        "geolocation_zip_code_prefix" AS geolocation_zip_code_prefix, 
+        "geolocation_lat" AS geolocation_lat,
+        "geolocation_lng" AS geolocation_lng,
         UPPER("geolocation_city") as geolocation_city,
-        "geolocation_state"
+        "geolocation_state" AS geolocation_state
 FROM RAW.GEOLOCATION;
 -- ==========================================================
 -- Validate Table
