@@ -6,7 +6,7 @@ USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA BRONZE;
 -- ==========================================================
--- CREATE CUSTOMER TABLE FROM RAW DATA
+-- CREATE ORDER_REVIEWS TABLE FROM RAW DATA
 -- ==========================================================
 CREATE OR REPLACE TABLE BRONZE.ORDER_REVIEWS AS 
 SELECT 
