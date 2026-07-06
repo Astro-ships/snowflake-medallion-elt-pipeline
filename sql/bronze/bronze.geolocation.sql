@@ -7,7 +7,7 @@ USE DATABASE ecommerce_db;
 USE SCHEMA BRONZE;
 
 -- ==========================================================
--- CREATE CUSTOMER TABLE FROM RAW DATA
+-- CREATE Geolocation TABLE FROM RAW DATA
 -- ==========================================================
 
 CREATE OR REPLACE TABLE bronze.geolocation AS
