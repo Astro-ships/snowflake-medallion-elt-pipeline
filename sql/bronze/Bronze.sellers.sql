@@ -16,3 +16,10 @@ SELECT
         "seller_city" AS  seller_city,
         "seller_state" AS seller_state 
 FROM RAW.SELLERS
+
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT * 
+FROM bronze.sellers
+LIMIT 10;
