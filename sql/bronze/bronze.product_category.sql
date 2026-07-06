@@ -13,3 +13,9 @@ SELECT
         "product_category_name" AS product_category_name,
          "product_category_name_english" AS product_category_name_english
 FROM RAW.PRODUCT_CATEGORY;
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT * 
+FROM bronze.product_category
+LIMIT 10;
