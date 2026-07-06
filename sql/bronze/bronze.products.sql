@@ -20,3 +20,8 @@ SELECT
         "product_height_cm" AS product_height_cm,
         "product_width_cm" AS product_width_cm 
 FROM RAW.products
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT * FROM bronze.products
+LIMIT 10;
