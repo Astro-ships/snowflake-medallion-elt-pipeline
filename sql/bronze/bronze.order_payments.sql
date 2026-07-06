@@ -19,3 +19,8 @@ SELECT
      "payment_installments" AS payment_installments,
      "payment_value" AS payment_value,
 FROM RAW.ORDER_PAYMENTS;
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT * FROM bronze.order_payments
+LIMIT 10;
