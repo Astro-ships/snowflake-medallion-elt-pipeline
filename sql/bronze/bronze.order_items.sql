@@ -20,4 +20,9 @@ SELECT
     "price" AS price,
     "freight_value" AS freight_value
 FROM RAW.ORDER_ITEMS
-
+-- ==========================================================
+-- Validate Table
+-- ==========================================================
+SELECT *
+FROM bronze.order_items
+LIMIT 10;
