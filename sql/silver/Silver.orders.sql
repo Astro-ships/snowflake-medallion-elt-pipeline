@@ -144,3 +144,23 @@ WHERE ORDER_ESTIMATED_DELIVERY_DATE IS NULL;
 -- NULL timestamp values are retained because they represent valid
 -- business states.
 -- ======================================================================
+
+-- ==========================================================
+-- Data Transformation 
+-- ==========================================================
+-- No transformations required.
+-- Data types were validated, and NULL timestamp values represent
+-- valid business states. Data is promoted from Bronze to Silver
+-- without modification.
+
+CREATE OR REPLACE TABLE SILVER.ORDERS AS
+SELECT 
+        ORDER_ID,
+        CUSTOMER_ID,
+        ORDER_STATUS,
+        ORDER_PURCHASE_TIMESTAMP,
+        ORDER_APPROVED_AT,
+        ORDER_DELIVERED_CARRIER_DATE,
+        ORDER_DELIVERED_CUSTOMER_DATE,
+        ORDER_ESTIMATED_DELIVERY_DATE
+FROM BRONZE.ORDERS
