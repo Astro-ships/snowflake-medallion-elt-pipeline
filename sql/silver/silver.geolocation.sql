@@ -33,14 +33,7 @@ GROUP BY prefix_length
 ORDER BY prefix_length;
 -- Result:
 -- Some ZIP code prefixes contain fewer than 5 digits.
--- Investigation:
--- ZIP code prefixes are stored as NUMBER, so leading zeros are removed.
--- ZIP codes should be standardized to a fixed 5-character format.
-SELECT 
-        LPAD(GEOLOCATION_ZIP_CODE_PREFIX,5,'0') AS GEOLOCATION_ZIP_CODE_PREFIX
-FROM BRONZE.GEOLOCATION
-LIMIT 50;
---Values standardized to 5 prefix
+
 --======================================
 -- Check GEOLOCATION_LAT Values
 --======================================
@@ -67,8 +60,9 @@ SELECT
 FROM BRONZE.GEOLOCATION
 WHERE GEOLOCATION_LNG IS NULL;
 --Result: No Nulls found
--- Validate longtitude values are within the valid geographic range (-180 to 180)./
 
+
+--Validate longtitude values are within the valid geographic range (-180 to 180)./
 SELECT 
         GEOLOCATION_CITY
 FROM BRONZE.GEOLOCATION
@@ -95,14 +89,7 @@ FROM BRONZE.GEOLOCATION
 -- Multiple formatting inconsistencies were found, including
 -- differences in capitalization and accented characters.
 -- City names will be standardized in the Silver layer.
-SELECT 
-     DISTINCT(TRANSLATE(INITCAP(LOWER(geolocation_city)),'áàâãéêíóôõúç',
-    'aaaaeeiooouc') ) as geolocation_city
-FROM bronze.geolocation
 
--- Evaluate city name standardization.
--- Convert values to title case and remove accented characters
--- to verify the expected standardized output.
 
 --======================================
 -- Check GEOLOCATION_STATE
@@ -113,9 +100,55 @@ SELECT
         COUNT(*)
 FROM BRONZE.GEOLOCATION
 WHERE GEOLOCATION_STATE IS NULL;
---Result: No NULL rows
--- Inspect GEOLOCATION_CITY for consistency
+-- Result: No NULL rows
+-- Inspect GEOLOCATION_state for consistency
 SELECT
       DISTINCT  GEOLOCATION_STATE
 FROM BRONZE.GEOLOCATION
 --Result: Data is consistent
+
+
+-- ===========================================================
+-- Data Transformation 
+-- ===========================================================
+-- Investigation:
+-- ZIP code prefixes are stored as NUMBER, so leading zeros are removed.
+-- ZIP codes should be standardized to a fixed 5-character format.
+SELECT 
+        LPAD(GEOLOCATION_ZIP_CODE_PREFIX,5,'0') AS GEOLOCATION_ZIP_CODE_PREFIX
+FROM BRONZE.GEOLOCATION
+LIMIT 50;
+
+--Values standardized to 5 prefix
+--===============================================================================
+SELECT 
+     DISTINCT
+     (TRANSLATE(INITCAP(LOWER(geolocation_city)),'áàâãéêíóôõúç',
+    'aaaaeeiooouc') ) as geolocation_city
+FROM bronze.geolocation
+
+-- Evaluate city name standardization.
+-- Convert values to title case and remove accented characters
+-- to verify the expected standardized output.
+-- ===========================================================
+-- Create table SILVER.GEOLOCATION
+-- ===========================================================
+-- Apply all validated transformations and create the Silver geolocation table.
+
+CREATE OR REPLACE TABLE SILVER.GEOLOCATION
+AS
+   SELECT 
+         LPAD(GEOLOCATION_ZIP_CODE_PREFIX,5,'0') AS geolocation_zip_code_prefix,
+         geolocation_lat,
+         geolocation_lng,
+         TRANSLATE(INITCAP(LOWER(geolocation_city)),'áàâãéêíóôõúç','aaaaeeiooouc') as geolocation_city,
+         geolocation_state
+   FROM BRONZE.geolocation;
+
+-- ===========================================================
+-- Validate table 
+-- ===========================================================
+SELECT 
+        *
+FROM SILVER.GEOLOCATION
+LIMIT 50;
