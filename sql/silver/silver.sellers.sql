@@ -83,3 +83,42 @@ SELECT
 FROM bronze.sellers
 --Values are standardized
 
+-- ===========================================================
+-- Data Transformation 
+-- ===========================================================
+-- Investigation:
+-- ZIP code prefixes are stored as NUMBER, so leading zeros are removed.
+-- ZIP codes should be standardized to a fixed 5-character format.
+-- Transforming and validating
+SELECT  
+        COUNT(*) AS total_rows,
+        LENGTH(LPAD(SELLER_ZIP_CODE_PREFIX,5,'0')) AS SELLER_ZIP_CODE_PREFIX_LENGTH
+FROM BRONZE.SELLERS
+GROUP BY SELLER_ZIP_CODE_PREFIX_LENGTH;
+--Length transformed to standard 5 prefix length
+-----------------------------------------------\
+--Transform lower case values of SELLER_CITY to a standardized values.
+--Transform and Validate
+SELECT
+        DISTINCT SELLER_CITY AS Original_seller_city,
+        INITCAP(SELLER_CITY) AS standard_seller_city
+FROM BRONZE.SELLERS
+
+-- ===========================================================
+-- Create table Silver.Sellers
+-- ===========================================================
+--Now that we have everything, creating silver layer table
+
+CREATE OR REPLACE TABLE SILVER.SELLERS AS
+SELECT
+       seller_id,
+       LPAD(SELLER_ZIP_CODE_PREFIX,5,'0') AS SELLER_ZIP_CODE_PREFIX,
+       INITCAP(SELLER_CITY) AS seller_city,
+       SELLER_STATE
+FROM BRONZE.SELLERS
+-- ===========================================================
+-- VALIDATE TABLE
+-- ===========================================================
+SELECT * 
+FROM SILVER.SELLERS
+LIMIT 50;
