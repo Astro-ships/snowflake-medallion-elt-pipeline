@@ -12,6 +12,9 @@ USE SCHEMA SILVER;
 
 -- Check for columns 
 SHOW COLUMNS IN TABLE BRONZE.CUSTOMERS;
+--======================================
+-- customer_id
+--======================================
 -- Check customer_id uniqueness
 SELECT 
         COUNT(*) AS total_rows,
@@ -24,12 +27,18 @@ SELECT
         COUNT(*)
 FROM bronze.customers
 WHERE customer_id IS NULL;
+--======================================
+-- customer_unique_id
+--======================================
 
 -- Check customer_unique_id NULL values
 SELECT 
         COUNT(*)
 FROM bronze.customers
 WHERE customer_unique_id IS NULL;
+--======================================
+-- CUSTOMER_ZIP_CODE_PREFIX
+--======================================
 
 -- Check ZIP code prefix for NULLS
 SELECT 
@@ -45,6 +54,9 @@ FROM BRONZE.CUSTOMERS
 GROUP BY prefix_length
 ORDER BY prefix_length;
     
+--======================================
+-- Customer_city 
+--======================================
 -- Check customer_city NULLS
 
 SELECT  
@@ -58,7 +70,9 @@ SELECT
         DISTINCT customer_city
 FROM BRONZE.CUSTOMERS
 LIMIT 300;
-
+--======================================
+-- Customer_state
+--======================================
 -- Check customer_state values
 SELECT 
         DISTINCT customer_state
@@ -83,10 +97,9 @@ LIMIT 50;
 
 --standardize customer_city 
 SELECT 
-        customer_city AS original_city,
-        LOWER(customer_city) AS standardized_city
+       DISTINCT customer_city AS original_city,
+       INITCAP(LOWER(customer_city)) AS standardized_city
 FROM BRONZE.CUSTOMERS
-LIMIT 20;
 
 -- ==========================================================
 -- CREATE STANDARDIZED SILVER LAYER CUSTOMER TABLE
