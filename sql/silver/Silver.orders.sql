@@ -164,3 +164,10 @@ SELECT
         ORDER_DELIVERED_CUSTOMER_DATE,
         ORDER_ESTIMATED_DELIVERY_DATE
 FROM BRONZE.ORDERS
+
+-- ==========================================================
+-- Validate table 
+-- ==========================================================
+
+SELECT * FROM SILVER.ORDERS 
+LIMIT 50;
