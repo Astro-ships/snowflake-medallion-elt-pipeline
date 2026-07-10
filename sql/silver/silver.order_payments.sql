@@ -91,3 +91,13 @@ SELECT *
 FROM BRONZE.ORDER_PAYMENTS
 WHERE PAYMENT_VALUE < 0;
 
+-- ==========================================================
+-- Data Transformation
+-- ==========================================================
+-- No transformations required.
+-- Data quality validation confirmed that the table contains
+-- consistent values and valid business relationships.
+CREATE OR REPLACE TABLE SILVER.ORDER_PAYMENTS
+AS
+SELECT * 
+FROM BRONZE.ORDER_PAYMENTS
