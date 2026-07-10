@@ -85,11 +85,11 @@ FROM BRONZE.ORDER_REVIEWS
 WHERE review_score IS NULL;
 --Result:None
 
---2:Check for a negative review score to ensure data quality
+--2:Check for a negative review score or greater than 5 to ensure data quality
 SELECT 
     COUNT(review_score) as Negative_score
 FROM bronze.order_reviews
-WHERE review_score < 0;
+WHERE review_score < 0 OR review_score > 5 ;
 --Result: None
 --====================================
 
@@ -118,9 +118,32 @@ WHERE review_score < 0;
 SELECT COUNT(*) AS Total_Nulls
 FROM BRONZE.ORDER_REVIEWS
 WHERE REVIEW_CREATION_DATE IS NULL;
+--2:Inspect Column
+SELECT 
+        REVIEW_CREATION_DATE
+FROM BRONZE.ORDER_REVIEWS
+LIMIT 50;
 
 SELECT COUNT(*) AS TOTAL_NULLS
 FROM BRONZE.ORDER_REVIEWS
 WHERE REVIEW_ANSWER_TIMESTAMP IS NULL;
 
 -- Result: No NULL values found.
+-- ==========================================================
+-- Data Transformation
+-- ==========================================================
+-- No transformations required.
+-- Data profiling confirmed that:
+-- • Composite key (REVIEW_ID, ORDER_ID) is unique.
+-- • Timestamp columns are complete and correctly typed.
+-- • NULL values in review comment fields are expected because
+--   review titles and messages are optional.
+
+-- ==========================================================
+-- Table Creation
+-- ==========================================================
+
+CREATE OR REPLACE TABLE SILVER.ORDER_REVIEWS AS 
+SELECT 
+        *
+FROM BRONZE.ORDER_REVIEWS
