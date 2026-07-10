@@ -124,4 +124,19 @@ WHERE FREIGHT_VALUE < 0;
 -- Profiling Summary
 -- ==========================================================
 -- No data quality issues requiring transformation were identified.
--- ORDER_ITEMS is loaded into the Silver layer without modification.
+-- ORDER_ITEMS Will be loaded into the Silver layer without modification.
+
+-- ==========================================================
+-- Create Table
+-- ==========================================================
+CREATE OR REPLACE TABLE SILVER.ORDER_ITEMS
+AS 
+SELECT
+        ORDER_ID,
+        ORDER_ITEM_ID,
+        PRODUCT_ID,
+        SELLER_ID,
+        SHIPPING_LIMIT_DATE,
+        PRICE,
+        FREIGHT_VALUE
+FROM BRONZE.ORDER_ITEMS
