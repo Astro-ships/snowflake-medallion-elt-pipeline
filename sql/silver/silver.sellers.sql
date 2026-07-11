@@ -9,58 +9,81 @@ USE SCHEMA SILVER;
 -- ==========================================================
 -- Data Profiling
 -- ==========================================================
+---------------------------------
+-- Check for columns 
+---------------------------------
 
----- Check for columns 
 SHOW COLUMNS IN TABLE BRONZE.sellers;
+---------------------------------
 -- Check for column values 
+---------------------------------
+
 
 DESCRIBE TABLE BRONZE.SELLERS;
 --======================================
 -- SELLER_ID
 --======================================
---Check for NULL
+---------------------------------
+-- Check for NULL
+---------------------------------
+
 SELECT 
         COUNT(*)
 FROM BRONZE.SELLERS
 WHERE seller_id IS NULL;
---Result:None
+---------------------------------
+-- Result:None
 -------------------------
---Check for duplicates
+-- Check for duplicates
+---------------------------------
+
 SELECT 
         COUNT(*) as total_rows,
         COUNT(DISTINCT seller_id) as unique_ids
 FROM BRONZE.sellers
---Result: All identifiers unique.
+---------------------------------
+-- Result: All identifiers unique.
 --======================================
 -- SELLER_ZIP_CODE_PREFIX
 --======================================
---Check for Nulls
+---------------------------------
+-- Check for Nulls
+---------------------------------
+
 SELECT 
         COUNT(*)
 FROM bronze.sellers
 WHERE SELLER_ZIP_CODE_PREFIX IS NULL;
---Result: None.
+---------------------------------
+-- Result: None.
 -----------------------------------
---Inspect length of the prefix
+-- Inspect length of the prefix
+---------------------------------
+
 SELECT 
         COUNT(*) AS total_rows,
         LENGTH(SELLER_ZIP_CODE_PREFIX) as Prefix_Length
 FROM bronze.sellers
 GROUP BY Prefix_Length
 ORDER BY Prefix_Length
+----------------------------------------
 -- Result:
--- Some ZIP code prefixes contain fewer than 5 digits.
+-- Some ZIP code prefixes contain fewer 
+-- than 5 digits.
 -- Transformation Pending
 --======================================
 -- SELLER_CITY
 --======================================
---Check NULLS
+-- Check NULLS
+---------------------------------
+
 SELECT 
         COUNT(*)
 FROM bronze.sellers
 WHERE SELLER_CITY IS NULL;
+------------------
 --Result:None.
------------------------------------------
+-----------------
 --Inspect data:SELLER_CITY
 SELECT 
         DISTINCT SELLER_CITY
@@ -70,19 +93,24 @@ FROM bronze.sellers
 --======================================
 -- SELLER_STATE
 --======================================
---Check NULLS
+--------------------
+-- Check NULLS
+-------------------
 SELECT 
         COUNT(*)
 FROM bronze.sellers
 WHERE SELLER_STATE IS NULL;
---Result:None.
+---------------------------------
+-- Result:None.
 ---------------------------------
 --Inspect data: SELLER_STATE
+---------------------------------
 SELECT 
        DISTINCT SELLER_STATE
 FROM bronze.sellers
+---------------------------------
 --Values are standardized
-
+---------------------------------
 -- ===========================================================
 -- Data Transformation 
 -- ===========================================================
@@ -95,10 +123,14 @@ SELECT
         LENGTH(LPAD(SELLER_ZIP_CODE_PREFIX,5,'0')) AS SELLER_ZIP_CODE_PREFIX_LENGTH
 FROM BRONZE.SELLERS
 GROUP BY SELLER_ZIP_CODE_PREFIX_LENGTH;
---Length transformed to standard 5 prefix length
------------------------------------------------\
---Transform lower case values of SELLER_CITY to a standardized values.
---Transform and Validate
+------------------------------------------------
+-- Length transformed to standard 5 prefix length
+-----------------------------------------------
+-- Transform lower case values of SELLER_CITY to 
+-- a standardized values.
+-- Transform and Validate
+-------------------------------------------------
+
 SELECT
         DISTINCT SELLER_CITY AS Original_seller_city,
         INITCAP(SELLER_CITY) AS standard_seller_city
@@ -107,7 +139,7 @@ FROM BRONZE.SELLERS
 -- ===========================================================
 -- Create table Silver.Sellers
 -- ===========================================================
---Now that we have everything, creating silver layer table
+-- Now that we have everything, creating silver layer table
 
 CREATE OR REPLACE TABLE SILVER.SELLERS AS
 SELECT
