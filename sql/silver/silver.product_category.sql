@@ -51,3 +51,31 @@ FROM BRONZE.PRODUCT_CATEGORY
 GROUP BY PRODUCT_CATEGORY_NAME_ENGLISH
 HAVING COUNT(*) > 1;
 --Result:None
+-- =============================
+-- Validate
+-- =============================
+--Since this is a mapping table, verify that it's a 1-to-1 mapping.
+SELECT 
+        PRODUCT_CATEGORY_NAME,
+        PRODUCT_CATEGORY_NAME_ENGLISH,
+        COUNT(*)
+FROM BRONZE.PRODUCT_CATEGORY
+GROUP BY 
+        PRODUCT_CATEGORY_NAME,
+        PRODUCT_CATEGORY_NAME_ENGLISH
+HAVING COUNT(*) > 1;
+--Result: 1-1 mapping confirmed
+-- ==========================================================
+-- Data Transformation
+-- ==========================================================
+-- No transformations required.
+-- Data profiling confirmed that the lookup table contains
+-- unique category mappings with no NULL values.
+-- ==========================================================
+-- Create silver layer table
+-- ==========================================================
+
+CREATE OR REPLACE TABLE SILVER.product_category
+AS 
+SELECT *
+FROM BRONZE.PRODUCT_CATEGORY
