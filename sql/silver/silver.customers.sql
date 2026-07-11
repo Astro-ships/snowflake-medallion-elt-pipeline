@@ -9,19 +9,23 @@ USE SCHEMA SILVER;
 -- ==========================================================
 -- Data Profiling
 -- ==========================================================
-
+---------------------
 -- Check for columns 
+---------------------
 SHOW COLUMNS IN TABLE BRONZE.CUSTOMERS;
 --======================================
 -- customer_id
 --======================================
+----------------------------------------
 -- Check customer_id uniqueness
+------------------------------------------
 SELECT 
         COUNT(*) AS total_rows,
         COUNT(DISTINCT customer_id) AS Total_unique_ids
 FROM BRONZE.CUSTOMERS
-
+------------------------------------------
 -- Check customer_id NULL values
+------------------------------------------
 
 SELECT 
         COUNT(*)
@@ -30,8 +34,9 @@ WHERE customer_id IS NULL;
 --======================================
 -- customer_unique_id
 --======================================
-
+------------------------------------------
 -- Check customer_unique_id NULL values
+------------------------------------------
 SELECT 
         COUNT(*)
 FROM bronze.customers
@@ -39,14 +44,16 @@ WHERE customer_unique_id IS NULL;
 --======================================
 -- CUSTOMER_ZIP_CODE_PREFIX
 --======================================
-
+------------------------------------------
 -- Check ZIP code prefix for NULLS
+------------------------------------------
 SELECT 
         COUNT(*)
 FROM bronze.customers
 WHERE CUSTOMER_ZIP_CODE_PREFIX IS NULL;
-
+------------------------------------------
 -- Check ZIP code prefix length
+------------------------------------------
 SELECT 
         COUNT(*) AS total_rows,
         LENGTH(CUSTOMER_ZIP_CODE_PREFIX) as prefix_length
@@ -58,13 +65,14 @@ ORDER BY prefix_length;
 -- Customer_city 
 --======================================
 -- Check customer_city NULLS
-
+------------------------------------------
 SELECT  
         COUNT(*)
 FROM BRONZE.CUSTOMERS 
 WHERE customer_city IS NULL;
-
+------------------------------------------
 -- Check customer_city Values
+------------------------------------------
 
 SELECT 
         DISTINCT customer_city
@@ -73,12 +81,16 @@ LIMIT 300;
 --======================================
 -- Customer_state
 --======================================
+------------------------------------------
 -- Check customer_state values
+------------------------------------------
 SELECT 
         DISTINCT customer_state
 FROM BRONZE.CUSTOMERS
 LIMIT 50;
+------------------------------------------
 -- Check customer_state for NULLS 
+------------------------------------------
 SELECT 
         COUNT(*) 
 FROM BRONZE.CUSTOMERS
@@ -87,8 +99,9 @@ WHERE customer_State IS NULL;
 -- ==========================================================
 -- Data Transformation
 -- ==========================================================
-
+--------------------------------
 -- Fix ZIP code prefix length
+--------------------------------
 SELECT
     customer_zip_code_prefix AS original_zip_prefix,
     LPAD(customer_zip_code_prefix, 5, '0') AS standardized_zip_prefix
