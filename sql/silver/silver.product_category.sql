@@ -8,53 +8,71 @@ USE SCHEMA SILVER;
 -- ==========================================================
 -- Data Profiling
 -- ==========================================================
-
+---------------------
 -- Check for columns 
+---------------------
 SHOW COLUMNS IN TABLE BRONZE.PRODUCT_CATEGORY;
 
 -- =====================
 -- PRODUCT_CATEGORY_NAME
 -- =====================
---1: Inspect column
+---------------------
+-- 1:Inspect column
+---------------------
 SELECT DISTINCT 
                 PRODUCT_CATEGORY_NAME
 FROM BRONZE.PRODUCT_CATEGORY
---2:Check for NULLS
+-----------------------------
+-- 2:Check for NULLS
+---------------------------- 
 SELECT 
         COUNT(*) AS total_Null_rows
 FROM BRONZE.PRODUCT_CATEGORY
 WHERE PRODUCT_CATEGORY_NAME IS NULL;
---Result:None
---Check duplicates
+-----------------------------
+-- Result:None
+-----------------------------
+-- Check duplicates
+-----------------------------
 SELECT  PRODUCT_CATEGORY_NAME
 FROM BRONZE.PRODUCT_CATEGORY
 GROUP BY PRODUCT_CATEGORY_NAME
 HAVING COUNT(*) > 1;
---Result:None
-
+--------------------------------
+-- Result:None
 -- =============================
 -- PRODUCT_CATEGORY_NAME_ENGLISH
 -- =============================
---1: Inspect column
+-- 1:Inspect column
+--------------------
 SELECT 
         DISTINCT PRODUCT_CATEGORY_NAME_ENGLISH
 FROM BRONZE.PRODUCT_CATEGORY
---2:Check Null
+---------------------
+-- 2:Check Nulls
+---------------------
 SELECT 
         COUNT(*) AS total_null_values
 FROM  BRONZE.PRODUCT_CATEGORY
 WHERE  PRODUCT_CATEGORY_NAME_ENGLISH IS NULL;
---Result: NONE
---CHECK for duplicates 
+---------------------
+-- Result: NONE
+---------------------
+-- CHECK for duplicates 
+---------------------
+
 SELECT  PRODUCT_CATEGORY_NAME_ENGLISH
 FROM BRONZE.PRODUCT_CATEGORY
 GROUP BY PRODUCT_CATEGORY_NAME_ENGLISH
 HAVING COUNT(*) > 1;
---Result:None
+--------------------------------
+-- Result:None
 -- =============================
 -- Validate
 -- =============================
---Since this is a mapping table, verify that it's a 1-to-1 mapping.
+-- Since this is a mapping table, 
+-- verify that it's a 1-to-1 mapping.
+--------------------------------
 SELECT 
         PRODUCT_CATEGORY_NAME,
         PRODUCT_CATEGORY_NAME_ENGLISH,
@@ -64,7 +82,8 @@ GROUP BY
         PRODUCT_CATEGORY_NAME,
         PRODUCT_CATEGORY_NAME_ENGLISH
 HAVING COUNT(*) > 1;
---Result: 1-1 mapping confirmed
+---------------------------------
+-- Result: 1-1 mapping confirmed
 -- ==========================================================
 -- Data Transformation
 -- ==========================================================
