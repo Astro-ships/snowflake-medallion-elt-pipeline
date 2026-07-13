@@ -28,3 +28,30 @@ SELECT
               seller_city,
               seller_state
 FROM SILVER.SELLERS;
+-- ==========================================================
+-- Validation: Compare row counts
+-- ==========================================================
+-- DIM_SELLERS is created directly from SILVER.SELLERS.
+-- Since no business filtering is applied, both tables are
+-- expected to contain the same number of seller records.
+-- ==========================================================
+SELECT 
+    (SELECT COUNT(*) FROM SILVER.SELLERS) AS silver_layer_rows,
+    (SELECT COUNT(*) FROM GOLD.dim_Sellers) AS Gold_layer_rows;
+
+-- ==========================================================
+-- Validation: Check for NULL primary keys
+-- ==========================================================
+-- Verify that the primary key (seller_id) contains no NULL
+-- values, ensuring every dimension record can be uniquely
+-- identified.
+-- ==========================================================
+
+SELECT 
+        COUNT(*) AS total_null_values 
+FROM GOLD.DIM_SELLERS
+WHERE seller_id IS NULL;
+-----------------
+-- Result: 
+-- 0 Null values
+-----------------
