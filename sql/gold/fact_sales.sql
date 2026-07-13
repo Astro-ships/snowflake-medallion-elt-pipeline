@@ -30,7 +30,11 @@ USE SCHEMA GOLD;
 -----------------
 -- SILVER.ORDERS
 -- • customer_id
+-- • order_status
 -- • order_purchase_timestamp
+-- • order_estimated_delivery_date
+-- • order_purchase_timestamp
+-- • order_delivered_customer_date
 --
 -- Measures:
 -- • price
@@ -46,23 +50,47 @@ USE SCHEMA GOLD;
 -- Create Gold.Fact table
 --==========================================================
 
-CREATE OR REPLACE TABLE GOLD.FACT_SALES AS 
+CREATE OR REPLACE TABLE GOLD.FACT_SALES AS
 
-SELECT 
-        oi.order_id,
-        oi.order_item_id,
-        o.customer_id,
-        oi.product_id,
-        oi.seller_id,
-        o.order_purchase_timestamp AS purchase_timestamp,
-        oi.price AS sales_amount,
-        oi.freight_value AS shipping_cost
-      
+SELECT
+
+-- ==========================================================
+-- Composite Key
+-- ==========================================================
+    oi.order_id,
+    oi.order_item_id,
+
+-- ==========================================================
+-- Foreign Keys
+-- ==========================================================
+    o.customer_id,
+    oi.product_id,
+    oi.seller_id,
+
+-- ==========================================================
+-- Transaction Attributes
+-- ==========================================================
+    o.order_status,
+    o.order_purchase_timestamp,
+    oi.shipping_limit_date,
+
+-- ==========================================================
+-- Delivery Information
+-- ==========================================================
+    o.order_estimated_delivery_date,
+    o.order_delivered_carrier_date,
+    o.order_delivered_customer_date,
+
+-- ==========================================================
+-- Measures
+-- ==========================================================
+    oi.price AS sales_amount,
+    oi.freight_value AS shipping_cost
+
 FROM SILVER.ORDER_ITEMS AS oi
 
-INNER JOIN SILVER.ORDERS AS O 
-ON 
-oi.order_id=o.order_id;
+INNER JOIN SILVER.ORDERS AS o
+    ON oi.order_id = o.order_id;
 
 -- ==========================================================
 -- Verify Row Count
