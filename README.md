@@ -147,7 +147,10 @@ Purpose:
 ---
 
 # Project Structure
-snowflake-medallion-elt-pipeline
+## Project Structure
+
+```text
+snowflake-medallion-elt-pipeline/
 │
 ├── .github/
 │   └── workflows/
@@ -167,11 +170,9 @@ snowflake-medallion-elt-pipeline
 ├── docs/
 │   ├── README.md
 │   ├── architecture.md
-│   ├── data_dictionary.md
-│   
+│   └── data_dictionary.md
 │
 ├── sql/
-│   │
 │   ├── setup/
 │   │   ├── README.md
 │   │   └── setup.sql
@@ -216,7 +217,7 @@ snowflake-medallion-elt-pipeline
 ├── .gitignore
 ├── LICENSE
 └── README.md
----
+```
 
 # ELT Workflow
 
