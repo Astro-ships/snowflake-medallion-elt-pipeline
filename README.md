@@ -1,8 +1,8 @@
-# Snowflake ETL Pipeline | Medallion Architecture Data Warehouse
+# Snowflake ELT Pipeline | Medallion Architecture Data Warehouse
 
 ## Project Overview
 
-This project demonstrates the design and implementation of a modern ETL pipeline using **Snowflake** and **SQL**, following the **Medallion Architecture (Raw → Bronze → Silver → Gold)**. The pipeline transforms raw e-commerce data into a dimensional data warehouse optimized for business intelligence and analytical reporting.
+This project demonstrates the design and implementation of a modern ELT pipeline using **Snowflake** and **SQL**, following the **Medallion Architecture (Raw → Bronze → Silver → Gold)**. The pipeline transforms raw e-commerce data into a dimensional data warehouse optimized for business intelligence and analytical reporting.
 
 The source data is the **Olist Brazilian E-commerce Dataset** obtained from Kaggle.
 
@@ -12,7 +12,7 @@ The project showcases end-to-end data engineering concepts including data ingest
 
 # Objectives
 
-* Build an end-to-end ETL pipeline using Snowflake.
+* Build an end-to-end ELT pipeline using Snowflake.
 * Implement the Medallion Architecture.
 * Clean, standardize, and transform raw data.
 * Design a Kimball-style dimensional data warehouse.
@@ -147,7 +147,7 @@ Purpose:
 ---
 
 # Project Structure
-snowflake-etl-pipeline/
+snowflake-medallion-elt-pipeline
 │
 ├── .github/
 │   └── workflows/
@@ -218,7 +218,7 @@ snowflake-etl-pipeline/
 └── README.md
 ---
 
-# ETL Workflow
+# ELT Workflow
 
 1. Use the data source provided in data folder.
 2. Upload CSV files into Snowflake internal stage using snownsql or snowsight. Download link for snowsql (https://www.snowflake.com/en/developers/downloads/snowsql/)
@@ -320,7 +320,7 @@ Additional documentation is available in the **docs/** directory.
 
 This project demonstrates practical knowledge of:
 
-* ETL Pipeline Development
+* ELT Pipeline Development
 * Snowflake
 * SQL
 * Medallion Architecture
@@ -356,5 +356,5 @@ Electrical Telecommunication Engineer
 
 GitHub: https://github.com/Astro-ships
 
-# Snowflake ETL Pipeline | Medallion Architecture Data Warehouse
+# Snowflake ELT Pipeline | Medallion Architecture Data Warehouse
 
