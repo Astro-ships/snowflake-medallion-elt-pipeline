@@ -52,6 +52,36 @@ The dataset contains information about:
 * Geolocation
 
 ---
+# Data Modeling
+
+This project demonstrates two complementary data modeling approaches:
+
+### Normalized Data Model (Silver Layer)
+
+The Silver layer follows a normalized relational design to:
+
+- Reduce data redundancy
+- Improve data consistency
+- Prepare clean datasets for analytical modeling
+
+### Star Schema (Gold Layer)
+
+The Gold layer follows a Kimball-style Star Schema consisting of fact and dimension tables.
+
+Fact tables:
+
+- FACT_SALES
+- FACT_PAYMENTS
+- FACT_REVIEWS
+
+Dimension tables:
+
+- DIM_CUSTOMER
+- DIM_PRODUCT
+- DIM_SELLER
+
+The Star Schema simplifies analytical queries while improving reporting performance.
+
 
 # Medallion Architecture
 
