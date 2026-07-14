@@ -307,8 +307,12 @@ This project demonstrates practical knowledge of:
 Dataset:
 
 **Olist Brazilian E-commerce Public Dataset**
+Source:
+
+https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
 
 Available through Kaggle, also I have uploaded the relevant docs in doc folder for conveniece
+
 
 ---
 
@@ -321,4 +325,6 @@ Electrical Telecommunication Engineer
 - Aspiring Data Engineer
 
 GitHub: https://github.com/Astro-ships
+
+# Snowflake ETL Pipeline | Medallion Architecture Data Warehouse
 
