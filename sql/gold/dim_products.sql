@@ -59,6 +59,36 @@ SELECT
     COUNT(*) AS total_null_product_ids
 FROM GOLD.DIM_PRODUCTS
 WHERE product_id IS NULL;
-
+---------------------------
 -- Expected Result:
 -- 0 NULL values.
+---------------------------
+-- ==========================================================
+-- Prerequisite: Surrogate Key Generation
+-- ==========================================================
+-- Execute sql/surrogate_keys/product_keys.sql before
+-- joining surrogate keys into this dimension table.
+CREATE OR REPLACE TABLE GOLD.DIM_PRODUCTS AS
+
+SELECT DISTINCT
+                pk.product_key,
+                sp.product_id,
+                sp.product_category_name,
+                sp.product_name_length,
+                sp.product_description_length,
+                sp.product_photos_qty,
+                sp.product_weight_g,
+                sp.product_length_cm,
+                sp.product_height_cm,
+                sp.product_width_cm
+FROM SILVER.PRODUCTS AS sp 
+INNER JOIN product_keys as pk 
+ON
+pk.product_id = sp.product_id;
+----------------------------------
+-- Inspect table
+-----------------------------------
+SELECT *
+FROM dim_products
+ORDER BY product_key
+LIMIT 50;

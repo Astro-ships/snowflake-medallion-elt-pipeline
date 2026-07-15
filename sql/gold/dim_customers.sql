@@ -70,3 +70,32 @@ HAVING COUNT(*) > 1;
 SELECT
     (SELECT COUNT(*) FROM SILVER.CUSTOMERS) AS total_silver_layer_table,
     (SELECT COUNT(*) FROM GOLD.DIM_CUSTOMERS) AS total_gold_dim_customers
+-- ==========================================================
+-- Prerequisite: Surrogate Key Generation
+-- ==========================================================
+-- Execute sql/surrogate_keys/customer_keys.sql before
+-- joining surrogate keys into this dimension table.
+SHOW COLUMNS IN TABLE gold.dim_customers;
+
+CREATE OR REPLACE TABLE GOLD.dim_customers 
+AS 
+SELECT 
+DISTINCT 
+    ck.customer_key,
+    sc.customer_id,
+    sc.customer_unique_id,
+    sc.customer_zip_code_prefix,
+    sc.customer_city,
+    sc.customer_state
+FROM silver.customers AS sc
+INNER JOIN customer_keys as ck 
+ON 
+ck.customer_id = sc.customer_id 
+
+-------------------
+-- Inspect table 
+-------------------
+SELECT * 
+FROM dim_customers
+ORDER BY customer_key 
+LIMIT 50;

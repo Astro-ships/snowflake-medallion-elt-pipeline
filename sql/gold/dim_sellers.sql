@@ -55,3 +55,27 @@ WHERE seller_id IS NULL;
 -- Result: 
 -- 0 Null values
 -----------------
+-- ==========================================================
+-- Prerequisite: Surrogate Key Generation
+-- ==========================================================
+-- Execute sql/surrogate_keys/seller_key.sql before
+-- joining surrogate keys into this dimension table.
+CREATE OR REPLACE TABLE GOLD.dim_sellers AS 
+SELECT 
+      DISTINCT 
+              sk.seller_key,
+              ss.seller_id,
+              ss.seller_zip_code_prefix,
+              ss.seller_city,
+              ss.seller_state
+FROM SILVER.SELLERS AS ss
+INNER JOIN seller_keys AS sk 
+ON 
+sk.seller_id = ss.seller_id;
+--==============================
+-- Inspect table 
+--==============================
+SELECT *
+FROM gold.dim_sellers
+ORDER BY seller_key
+LIMIT 50;
