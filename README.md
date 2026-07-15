@@ -9,6 +9,63 @@ The source data is the **Olist Brazilian E-commerce Dataset** obtained from Kagg
 The project showcases end-to-end data engineering concepts including data ingestion, data transformation, dimensional modeling, data quality validation, and warehouse design.
 
 ---
+# 🚀 Latest Updates
+
+## Version 1.1 — Surrogate Key Enhancement
+
+### ✨ What's New
+
+- Introduced surrogate keys for all Gold dimension tables.
+- Updated fact tables to reference surrogate keys instead of natural business keys.
+- Added surrogate key generation scripts using:
+  - `ROW_NUMBER()`
+  - Snowflake `SEQUENCE` (recommended)
+- Added comprehensive documentation for surrogate key generation.
+- Improved warehouse design by aligning the Gold layer with Kimball dimensional modeling best practices.
+
+### 🔄 Affected Tables
+
+**Dimension Tables**
+
+- DIM_CUSTOMERS
+- DIM_PRODUCTS
+- DIM_SELLERS
+
+**Fact Tables**
+
+- FACT_SALES
+- FACT_PAYMENTS
+- FACT_REVIEWS
+
+### 🔁 Foreign Key Changes
+------------------------------
+| Previous    | Current      |
+|-------------|--------------|
+| customer_id | customer_key |
+| product_id  | product_key  |
+| seller_id   | seller_key   |
+------------------------------
+### 📌 Unchanged
+
+The following business identifiers remain as **Degenerate Dimensions** because they uniquely identify business transactions and contain no descriptive attributes:
+
+- order_id
+- order_item_id
+- payment_sequential
+- review_id
+
+---
+
+> **Note**
+>
+> Surrogate key generation scripts are located under:
+>
+> ```
+> sql/surrogate_keys/
+> ```
+>
+> These scripts must be executed before creating the updated Gold dimension and fact tables.
+---------------
 
 # Objectives
 
@@ -170,7 +227,8 @@ snowflake-medallion-elt-pipeline/
 ├── docs/
 │   ├── README.md
 │   ├── architecture.md
-│   └── data_dictionary.md
+│   ├── data_dictionary.md
+│   └── CHANGELOG.md
 │
 ├── sql/
 │   ├── setup/
@@ -205,14 +263,20 @@ snowflake-medallion-elt-pipeline/
 │   │   ├── silver_products.sql
 │   │   └── silver_sellers.sql
 │   │
+│   ├── surrogate_keys/
+│   │   ├── README.md
+│   │   ├── customer_keys.sql
+│   │   ├── product_keys.sql
+│   │   └── seller_keys.sql
+│   │
 │   └── gold/
 │       ├── README.md
-│       ├── fact_sales.sql
-│       ├── fact_payments.sql
-│       ├── fact_reviews.sql
 │       ├── dim_customers.sql
 │       ├── dim_products.sql
-│       └── dim_sellers.sql
+│       ├── dim_sellers.sql
+│       ├── fact_sales.sql
+│       ├── fact_payments.sql
+│       └── fact_reviews.sql
 │
 ├── .gitignore
 ├── LICENSE
