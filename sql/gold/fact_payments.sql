@@ -21,20 +21,33 @@ USE SCHEMA GOLD;
 -- payment_value
 -- ==========================================================
 
+/*
+==========================================================
+Surrogate Key Integration
+
+This implementation replaces the natural customer_id with
+customer_key generated from the Gold dimension.
+
+Prerequisite:
+Execute sql/surrogate_keys/customer_keys.sql before
+running this script.
+==========================================================
+*/
+
 CREATE OR REPLACE TABLE GOLD.FACT_PAYMENTS AS
 
 SELECT
 
 -- ==========================================================
--- Composite Key
+-- Composite Key (Degenerate Dimension)
 -- ==========================================================
     sp.order_id,
     sp.payment_sequential,
 
 -- ==========================================================
--- Foreign Key
+-- Foreign Key (Surrogate Key)
 -- ==========================================================
-    so.customer_id,
+    ck.customer_key,
 
 -- ==========================================================
 -- Transaction Attributes
@@ -52,4 +65,7 @@ SELECT
 FROM SILVER.ORDER_PAYMENTS AS sp
 
 INNER JOIN SILVER.ORDERS AS so
-    ON sp.order_id = so.order_id;
+    ON sp.order_id = so.order_id
+
+INNER JOIN CUSTOMER_KEYS AS ck
+    ON so.customer_id = ck.customer_id;

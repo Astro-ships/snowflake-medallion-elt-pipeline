@@ -21,21 +21,34 @@ USE SCHEMA GOLD;
 -- Measure:
 -- review_score
 -- ==========================================================
+/*
+==========================================================
+Surrogate Key Integration
+
+This implementation replaces the natural customer_id with
+customer_key generated from the Gold dimension.
+
+Prerequisite:
+Execute sql/surrogate_keys/customer_keys.sql before
+running this script.
+
+==========================================================
+*/
 
 CREATE OR REPLACE TABLE GOLD.FACT_REVIEWS AS
 
-SELECT DISTINCT
+SELECT
 
 -- ==========================================================
--- Composite Key
+-- Composite Key (Degenerate Dimensions)
 -- ==========================================================
     sr.review_id,
     sr.order_id,
+
 -- ==========================================================
--- Foreign Keys
+-- Foreign Key (Surrogate Key)
 -- ==========================================================
-    
-    so.customer_id,
+    ck.customer_key,
 
 -- ==========================================================
 -- Review Attributes
@@ -51,8 +64,10 @@ SELECT DISTINCT
 FROM SILVER.ORDER_REVIEWS AS sr
 
 INNER JOIN SILVER.ORDERS AS so
-    ON sr.order_id = so.order_id;
+    ON sr.order_id = so.order_id
 
+INNER JOIN CUSTOMER_KEYS AS ck
+    ON so.customer_id = ck.customer_id;
 ------------------------------------
 -- Check the primary key
 ------------------------------------
@@ -72,7 +87,7 @@ FROM GOLD.FACT_reviews;
 ------------------------------------------------
 SELECT 
         (SELECT COUNT(*) FROM SILVER.ORDER_REVIEWS) AS TOTAL_ROWS_IN_SILVER_LAYER,
-        (SELECT COUNT(*) FROM GOLD.FACT_REVIEWS) AS TOTAL_ROWS_IN_GOLD_LAYER 
+        (SELECT COUNT(*) FROM GOLD.FACT_REVIEWS) AS TOTAL_ROWS_IN_GOLD_LAYER ;
 
 -- -----------------------------------------------------
 -- Results:  Both tables have same row_count
@@ -89,3 +104,9 @@ ORDER BY occurrences DESC;
 -----------------------------------------------------------------------
 -- This means review_id is not a primary key as originaly
 -- declared but a composite key(review_id + order_id )
+--------------------------------
+-- Inspect table 
+--------------------------------
+SELECT *
+FROM GOLD.FACT_PAYMENTS
+LIMIT 40;

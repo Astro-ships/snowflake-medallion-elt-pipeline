@@ -49,13 +49,31 @@ USE SCHEMA GOLD;
 -- ==========================================================
 -- Create Gold.Fact table
 --==========================================================
+/*
+==========================================================
+Surrogate Key Integration
+
+This implementation replaces natural business keys with
+surrogate keys generated from the Gold dimension tables.
+
+Prerequisite:
+Execute the surrogate key generation scripts located in
+sql/surrogate_keys before running this script.
+
+Natural Keys Replaced:
+- customer_id -> customer_key
+- product_id  -> product_key
+- seller_id   -> seller_key
+
+==========================================================
+*/
 
 CREATE OR REPLACE TABLE GOLD.FACT_SALES AS
 
 SELECT
 
 -- ==========================================================
--- Composite Key
+-- Degnerate Dimension
 -- ==========================================================
     oi.order_id,
     oi.order_item_id,
@@ -63,9 +81,9 @@ SELECT
 -- ==========================================================
 -- Foreign Keys
 -- ==========================================================
-    o.customer_id,
-    oi.product_id,
-    oi.seller_id,
+    ck.customer_key,
+    pk.product_key,
+    sk.seller_key,
 
 -- ==========================================================
 -- Transaction Attributes
@@ -88,9 +106,21 @@ SELECT
     oi.freight_value AS shipping_cost
 
 FROM SILVER.ORDER_ITEMS AS oi
-
+--=================================================
+-- Joins: Order is being joined with keys 
+--===============================================
 INNER JOIN SILVER.ORDERS AS o
-    ON oi.order_id = o.order_id;
+ON 
+oi.order_id = o.order_id
+INNER JOIN CUSTOMER_KEYS AS ck
+ON
+o.customer_id = ck.customer_id
+INNER JOIN product_keys AS pk 
+ON 
+oi.product_id = pk.product_id 
+INNER JOIN  seller_keys  AS sk 
+ON 
+oi.seller_id = sk.seller_id;
 
 -- ==========================================================
 -- Verify Row Count
