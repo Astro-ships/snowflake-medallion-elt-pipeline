@@ -41,9 +41,9 @@ The project showcases end-to-end data engineering concepts including data ingest
 ------------------------------
 | Previous    | Current      |
 |-------------|--------------|
-| customer_id | customer_key |
-| product_id  | product_key  |
-| seller_id   | seller_key   |
+|customer_id  |customer_key  |
+|product_id   |product_key   |
+|seller_id    |seller_key    |
 ------------------------------
 ### 📌 Unchanged
 
