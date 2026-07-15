@@ -5,88 +5,87 @@ USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA GOLD;
+
 /*
 ==========================================================
-Surrogate Key Generation
+Seller Surrogate Key Generation
 ==========================================================
 
-This file demonstrates two approaches for generating
-surrogate keys in Snowflake.
+Business Entity : Seller
 
-1. ROW_NUMBER()
-   - Simple and suitable for static datasets.
-   - Used in this project for demonstration purposes.
+Grain           : One row represents one unique seller.
 
-2. Snowflake SEQUENCE
-   - Recommended for production data warehouses.
-   - Produces stable surrogate keys that do not change
-     during incremental loads.
+Primary Key     : seller_key
 
+Natural Key     : seller_id
+
+NOTE:
+This script demonstrates two approaches for generating
+surrogate keys.
+
+• Method 1: ROW_NUMBER() (Demonstration)
+• Method 2: Snowflake SEQUENCE (Production)
+
+Execute only ONE method at a time because both methods
+create the SELLER_KEYS table.
+
+For a detailed explanation of each approach, refer to
+the README in the surrogate_keys folder.
 ==========================================================
 */
---========================================================
--- 1. ROW_NUMBER()
---========================================================
--------------------------------------------
--- Grain:
--- One row represents one unique seller.
 
--- Primary Key:
--- seller_key
--------------------------------------------
+--==========================================================
+-- Method 1 : ROW_NUMBER()
+--==========================================================
 
-CREATE OR REPLACE TABLE seller_keys AS 
+CREATE OR REPLACE TABLE seller_keys AS
 
-SELECT DISTINCT 
-                ROW_NUMBER() OVER (ORDER BY seller_id) AS seller_key,
-                seller_id
-                
+SELECT
+    ROW_NUMBER() OVER (ORDER BY seller_id) AS seller_key,
+    seller_id
 FROM GOLD.DIM_SELLERS;
 
---==============================
--- Validate keys
---=============================
--- Check for 1-1 mapping
--------------------------------
-SELECT COUNT(*) AS total_rows,
-       COUNT(DISTINCT(seller_key)) AS unique_seller_key,
-       COUNT(DISTINCT(seller_id)) AS  unique_seller_id
+--==========================================================
+-- Validation
+--==========================================================
+
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(DISTINCT seller_key) AS unique_seller_keys,
+    COUNT(DISTINCT seller_id) AS unique_seller_ids
 FROM seller_keys;
----------------------------------------------------------
+
 SELECT *
-FROM seller_keys 
-ORDER BY seller_key 
+FROM seller_keys
+ORDER BY seller_key
 LIMIT 50;
---=======================================================
---========================================================
--- Method 2: Snowflake SEQUENCE (Recommended)
---========================================================
--- This method is recommended for production environments
--- because generated surrogate keys remain stable across
--- incremental loads and data refreshes.
-CREATE OR REPLACE SEQUENCE seller_sq
+
+--==========================================================
+-- Method 2 : Snowflake SEQUENCE (Recommended)
+--==========================================================
+
+CREATE OR REPLACE SEQUENCE seller_key_seq
 START = 1
 INCREMENT = 1;
 
-CREATE OR REPLACE TABLE seller_keys AS 
-SELECT DISTINCT 
-              seller_sq.NEXTVAL as seller_key,
-              seller_id 
+CREATE OR REPLACE TABLE seller_keys AS
+
+SELECT
+    seller_key_seq.NEXTVAL AS seller_key,
+    seller_id
 FROM GOLD.DIM_SELLERS;
 
---==============================
--- Validate keys
---=============================
--- Check for 1-1 mapping
--------------------------------
-SELECT COUNT(*) AS total_rows,
-       COUNT(DISTINCT(seller_key)) AS unique_seller_key,
-       COUNT(DISTINCT( seller_id)) AS  unique_seller_id
-FROM seller_keys
----------------------------------------------------
--- Inspect table 
------------------
+--==========================================================
+-- Validation
+--==========================================================
+
+SELECT
+    COUNT(*) AS total_rows,
+    COUNT(DISTINCT seller_key) AS unique_seller_keys,
+    COUNT(DISTINCT seller_id) AS unique_seller_ids
+FROM seller_keys;
+
 SELECT *
-FROM seller_keys 
-ORDER BY seller_key 
+FROM seller_keys
+ORDER BY seller_key
 LIMIT 50;
