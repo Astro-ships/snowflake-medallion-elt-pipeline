@@ -75,7 +75,6 @@ SELECT
 -- ==========================================================
 -- Execute sql/surrogate_keys/customer_keys.sql before
 -- joining surrogate keys into this dimension table.
-SHOW COLUMNS IN TABLE gold.dim_customers;
 
 CREATE OR REPLACE TABLE GOLD.dim_customers 
 AS 
