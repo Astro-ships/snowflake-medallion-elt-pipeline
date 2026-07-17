@@ -69,3 +69,42 @@ INNER JOIN SILVER.ORDERS AS so
 
 INNER JOIN CUSTOMER_KEYS AS ck
     ON so.customer_id = ck.customer_id;
+
+-- ===============================================
+-- Verify Row Count
+-- ===============================================
+SELECT 
+        ( SELECT COUNT(*) FROM SILVER.ORDER_PAYMENTS) AS SILVER_ROWS,
+        (SELECT COUNT(*) FROM GOLD.FACT_PAYMENTS) AS GOLD_ROWS;
+-- ================================================
+-- Version 1.2 - Query Performance Optimizaiton
+-- Feature Snowflake cluster 
+-- ===============================================
+-- Objective:
+-- Optimize analytical query performance by clustering the
+-- FACT_PAYMENTS table on ORDER_PURCHASE_TIMESTAMP.
+-- Rationale:
+-- FACT_PAYMENTS is commonly queried alongside order dates for
+-- payment trend analysis, monthly reporting, and financial
+-- dashboards. Clustering by ORDER_PURCHASE_TIMESTAMP improves
+-- micro-partition pruning for date-range queries.
+-- ==========================================================
+-- Step 1: Inspect Existing Table Structure
+-- ==========================================================
+SHOW COLUMNS IN TABLE FACT_PAYMENTS;
+-- ==========================================================
+-- Step 2: Apply Clustering Key
+-- ==========================================================
+ALTER TABLE GOLD.FACT_PAYMENTS
+CLUSTER BY (ORDER_PURCHASE_TIMESTAMP);
+
+-- ==========================================================
+-- Step 3: Verify Clustering Configuration
+-- ==========================================================
+-- Display table metadata 
+SHOW TABLES LIKE 'FACT_PAYMENTS' IN SCHEMA GOLD;
+
+-- Display clustering information
+SELECT SYSTEM$CLUSTERING_INFORMATION('GOLD.FACT_PAYMENTS');
+-- Display table DDL
+SELECT GET_DDL('TABLE', 'GOLD.FACT_PAYMENTS');

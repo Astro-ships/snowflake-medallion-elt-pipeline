@@ -106,9 +106,9 @@ SELECT
     oi.freight_value AS shipping_cost
 
 FROM SILVER.ORDER_ITEMS AS oi
---=================================================
+-- ================================================
 -- Joins: Order is being joined with keys 
---===============================================
+-- ==============================================
 INNER JOIN SILVER.ORDERS AS o
 ON 
 oi.order_id = o.order_id
@@ -124,7 +124,7 @@ oi.seller_id = sk.seller_id;
 
 -- ==========================================================
 -- Verify Row Count
---=========================================================== 
+-- ========================================================== 
 SELECT
     (SELECT COUNT(*) FROM GOLD.FACT_SALES) AS total_gold_table_rows,
     (SELECT COUNT(*) FROM SILVER.ORDER_ITEMS) AS total_silver_table_rows;
@@ -141,3 +141,43 @@ FROM GOLD.FACT_SALES;
 -------------------------------------------------
 -- Result: Both rows count are equal
 ------------------------------------------------
+
+-- ==========================================================
+-- Version 1.2 - Query Performance Optimization
+-- Feature: Snowflake Clustering
+-- ==========================================================
+-- Objective:
+-- Optimize analytical query performance by clustering the
+-- FACT_SALES table on ORDER_PURCHASE_TIMESTAMP.
+--
+-- Rationale:
+-- FACT_SALES is primarily queried using date-range filters
+-- (monthly, quarterly and yearly reporting). Clustering on
+-- ORDER_PURCHASE_TIMESTAMP improves micro-partition pruning
+-- and reduces the amount of data scanned.
+-- ==========================================================
+
+-- ==========================================================
+-- Step 1: Inspect Existing Table Structure
+-- ==========================================================
+SHOW COLUMNS IN TABLE GOLD.FACT_SALES;
+
+-- ==========================================================
+-- Step 2: Apply Clustering Key
+-- ==========================================================
+ALTER TABLE GOLD.FACT_SALES
+CLUSTER BY (ORDER_PURCHASE_TIMESTAMP);
+
+-- ==========================================================
+-- Step 3: Verify Clustering Configuration
+-- ==========================================================
+
+-- Display table metadata
+SHOW TABLES LIKE 'FACT_SALES' IN SCHEMA GOLD;
+
+-- Display clustering information
+SELECT SYSTEM$CLUSTERING_INFORMATION('GOLD.FACT_SALES');
+
+-- (Optional) Display the table DDL to verify the
+-- CLUSTER BY clause has been applied.
+SELECT GET_DDL('TABLE', 'GOLD.FACT_SALES');

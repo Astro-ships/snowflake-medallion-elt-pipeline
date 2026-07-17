@@ -11,6 +11,25 @@ The project showcases end-to-end data engineering concepts including data ingest
 ---
 # 🚀 Latest Updates
 
+### v1.2 — Query Performance Optimization
+
+**New Features**
+
+- Introduced Snowflake Clustering to optimize analytical workloads.
+- Clustered `FACT_SALES` on `ORDER_PURCHASE_TIMESTAMP`.
+- Clustered `FACT_PAYMENTS` on `ORDER_PURCHASE_TIMESTAMP`.
+- Added clustering validation using `SYSTEM$CLUSTERING_INFORMATION()`.
+- Documented clustering strategy and implementation.
+- Updated Gold Layer documentation.
+
+> **Note**
+>
+> **Snowflake Clustering (v1.2)** was intentionally applied only to the **FACT_SALES** table because it is the primary analytical fact table and is frequently filtered using **`ORDER_PURCHASE_TIMESTAMP`** for time-based reporting.
+>
+> Dimension tables and smaller fact tables were intentionally left **unclustered** to avoid unnecessary serverless compute costs, as the performance benefits would not justify the additional maintenance overhead.
+--
+---
+
 ## Version 1.1 — Surrogate Key Enhancement
 
 ### ✨ What's New
@@ -66,6 +85,14 @@ The following business identifiers remain as **Degenerate Dimensions** because t
 >
 > These scripts must be executed before creating the updated Gold dimension and fact tables.
 ---------------
+## 📈 Project Evolution
+
+| Version | Major Update |
+|----------|--------------|
+| **v1.0** | Built complete Snowflake Medallion ELT Pipeline |
+| **v1.1** | Introduced surrogate keys and enhanced dimensional modeling |
+| **v1.2** | Implemented Snowflake clustering for query performance optimization |
+| **v1.3** | *(Planned)* CI/CD automation using GitHub Actions |
 
 # Objectives
 
@@ -348,16 +375,17 @@ The warehouse was validated using several quality checks including:
 
 ---
 
-# Key Features
+## 🚀 Features
 
-* Medallion Architecture implementation.
-* Snowflake data warehouse.
-* Star Schema dimensional modeling.
-* Fact and Dimension table design.
-* Composite primary key validation.
-* Data quality checks.
-* Well-documented SQL transformations.
-* Complete project documentation.
+- Medallion Architecture (RAW → Bronze → Silver → Gold)
+- Kimball Star Schema
+- Snowflake SQL ELT Pipeline
+- Data Validation Framework
+- Surrogate Key Implementation
+- Degenerate Dimensions
+- Snowflake Clustering for Query Optimization
+- Comprehensive Documentation
+- Git Version Control
 
 ---
 
