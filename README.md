@@ -10,6 +10,39 @@ The project showcases end-to-end data engineering concepts including data ingest
 
 ---
 # 🚀 Latest Updates
+## Version 1.3 — Analytics Layer using Snowflake Dynamic Tables
+
+### ✨ New Features
+
+- Introduced an **Analytics Layer** powered by Snowflake Dynamic Tables.
+- Implemented automated business-ready analytical datasets.
+- Added **Monthly Sales** Dynamic Table.
+- Added **Month-over-Month (MoM) Sales Growth** Dynamic Table.
+- Added **Year-over-Year (YoY) Sales Growth** Dynamic Table.
+- Added **Top 3 Products by Monthly Revenue** Dynamic Table.
+- Added **Top 3 Sellers by Monthly Revenue** Dynamic Table.
+- Implemented automatic refreshes using `TARGET_LAG`.
+- Extended the Medallion Architecture beyond the Gold layer.
+- Added comprehensive Analytics Layer documentation.
+
+> **Prerequisites**
+>
+> Before deploying the Analytics Layer:
+>
+> - Gold Layer must already exist.
+> - Surrogate Keys must already be implemented.
+> - Fact tables must reference Dimension surrogate keys.
+>
+> Dynamic Tables depend on:
+>
+> - FACT_SALES
+> - FACT_PAYMENTS
+> - FACT_REVIEWS
+> - DIM_CUSTOMERS
+> - DIM_PRODUCTS
+> - DIM_SELLERS
+
+---
 
 ### v1.2 — Query Performance Optimization
 
@@ -92,7 +125,8 @@ The following business identifiers remain as **Degenerate Dimensions** because t
 | **v1.0** | Built complete Snowflake Medallion ELT Pipeline |
 | **v1.1** | Introduced surrogate keys and enhanced dimensional modeling |
 | **v1.2** | Implemented Snowflake clustering for query performance optimization |
-| **v1.3** | *(Planned)* CI/CD automation using GitHub Actions |
+| **v1.3** | Introduced Analytics Layer using Snowflake Dynamic Tables |
+| **v1.4** | *(Planned)* CI/CD automation using GitHub Actions |
 
 # Objectives
 
@@ -116,7 +150,7 @@ The following business identifiers remain as **Degenerate Dimensions** because t
 | Git        | Version Control                |
 | GitHub     | Source Control & Documentation |
 | Kaggle     | Source Dataset                 |
-
+|Snowflake Dynamic Tables|Automated Analytics 
 ---
 
 # Dataset
@@ -173,18 +207,22 @@ The project follows the Medallion Architecture consisting of four layers:
 
 ```text
 Kaggle Dataset
-       │
-       ▼
+      │
+      ▼
  RAW Layer
-       │
-       ▼
- BRONZE Layer
-       │
-       ▼
- SILVER Layer
-       │
-       ▼
+      │
+      ▼
+BRONZE Layer
+      │
+      ▼
+SILVER Layer
+      │
+      ▼
  GOLD Layer
+      │
+      ▼
+ANALYTICS Layer
+(Dynamic Tables)
 ```
 
 ## RAW Layer
@@ -229,6 +267,22 @@ Purpose:
 * Support reporting and business analytics.
 
 ---
+# Analytics Layer
+
+The Analytics layer extends the Medallion Architecture by utilizing **Snowflake Dynamic Tables** to automatically maintain business-ready analytical datasets.
+
+Unlike traditional reporting tables that require scheduled ETL jobs or manual refreshes, Dynamic Tables continuously refresh themselves based on the configured `TARGET_LAG`, ensuring analytical datasets remain synchronized with the latest data in the Gold layer.
+
+Current Dynamic Tables include:
+
+- Monthly Sales
+- Month-over-Month (MoM) Sales Growth
+- Year-over-Year (YoY) Sales Growth
+- Top 3 Products by Monthly Revenue
+- Top 3 Sellers by Monthly Revenue
+
+These datasets are designed for business intelligence, dashboarding, executive reporting, and analytical workloads.
+I might add some more typical analytics queries.
 
 # Project Structure
 ## Project Structure
@@ -296,14 +350,22 @@ snowflake-medallion-elt-pipeline/
 │   │   ├── product_keys.sql
 │   │   └── seller_keys.sql
 │   │
-│   └── gold/
+│   ├── gold/
+│   │   ├── README.md
+│   │   ├── dim_customers.sql
+│   │   ├── dim_products.sql
+│   │   ├── dim_sellers.sql
+│   │   ├── fact_sales.sql
+│   │   ├── fact_payments.sql
+│   │   └── fact_reviews.sql
+│   │
+│   └── analytics/
 │       ├── README.md
-│       ├── dim_customers.sql
-│       ├── dim_products.sql
-│       ├── dim_sellers.sql
-│       ├── fact_sales.sql
-│       ├── fact_payments.sql
-│       └── fact_reviews.sql
+│       ├── monthly_sales.sql
+│       ├── monthly_growth.sql
+│       ├── yoy_growth.sql
+│       ├── top_3_monthly_products.sql
+│       └── top_3_monthly_sellers.sql
 │
 ├── .gitignore
 ├── LICENSE
@@ -377,9 +439,11 @@ The warehouse was validated using several quality checks including:
 
 ## 🚀 Features
 
-- Medallion Architecture (RAW → Bronze → Silver → Gold)
+- Medallion Architecture (RAW → Bronze → Silver → Gold → Analytics)
 - Kimball Star Schema
 - Snowflake SQL ELT Pipeline
+- Snowflake Dynamic Tables
+- Automated Business KPI Calculations
 - Data Validation Framework
 - Surrogate Key Implementation
 - Degenerate Dimensions
@@ -401,27 +465,30 @@ Additional documentation is available in the **docs/** directory.
 
 # Future Improvements
 
-* Implement automated data ingestion using Snowflake Tasks and Streams.
-* Build interactive Power BI dashboards.
-* Add Python-based orchestration.
-* Implement CI/CD using GitHub Actions.
-* Extend analytical reporting.
-
+- Implement CI/CD using GitHub Actions.
+- Implement automated ingestion using Snowflake Streams and Tasks.
+- Add Snowpark transformations.
+- Implement Data Quality Monitoring.
+- Introduce Incremental ELT patterns.
 ---
 
 # Learning Outcomes
 
 This project demonstrates practical knowledge of:
 
-* ELT Pipeline Development
-* Snowflake
-* SQL
-* Medallion Architecture
-* Data Warehousing
-* Dimensional Modeling
-* Star Schema Design
-* Data Validation
-* Git & GitHub
+- ELT Pipeline Development
+- Snowflake
+- Snowflake Dynamic Tables
+- SQL
+- Medallion Architecture
+- Data Warehousing
+- Dimensional Modeling
+- Star Schema Design
+- Surrogate Keys
+- Window Functions
+- Business KPI Development
+- Data Validation
+- Git & GitHub
 
 ---
 
