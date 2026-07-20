@@ -20,7 +20,10 @@ USE SCHEMA ANALYTICS;
 -- within a maximum lag of one day whenever FACT_SALES
 -- receives new data.
 -- ==========================================================
-
+CREATE OR REPLACE DYNAMIC TABLE yoy_growth
+TARGET_LAG= '1 day'
+WAREHOUSE=compute_wh
+AS 
 WITH yoy_growth AS (
 
     -- ------------------------------------------------------
