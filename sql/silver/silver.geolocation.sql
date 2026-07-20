@@ -142,11 +142,11 @@ LIMIT 50;
 --===============================================================================
 SELECT 
      DISTINCT
-     (TRANSLATE(INITCAP(LOWER(geolocation_city)),'áàâãéêíóôõúç',
+     (TRANSLATE(INITCAP(LOWER(REPLACE(geolocation_city, 'Sa£o', 'São'))),'áàâãéêíóôõúç',
     'aaaaeeiooouc') ) as geolocation_city
-FROM bronze.geolocation
+FROM bronze.geolocation;
 ---------------------------------------------------------------
--- Evaluate city name standardization.
+-- Evaluate city name standardization. Sa£o Paulo
 -- Convert values to title case and remove accented characters
 -- to verify the expected standardized output.
 -- ===========================================================
@@ -160,7 +160,8 @@ AS
          LPAD(GEOLOCATION_ZIP_CODE_PREFIX,5,'0') AS geolocation_zip_code_prefix,
          geolocation_lat,
          geolocation_lng,
-         TRANSLATE(INITCAP(LOWER(geolocation_city)),'áàâãéêíóôõúç','aaaaeeiooouc') as geolocation_city,
+         (TRANSLATE(INITCAP(LOWER(REPLACE(geolocation_city, 'Sa£o', 'São'))),'áàâãéêíóôõúç',
+        'aaaaeeiooouc') ) as geolocation_city,
          geolocation_state
    FROM BRONZE.geolocation;
 
@@ -170,4 +171,4 @@ AS
 SELECT 
         *
 FROM SILVER.GEOLOCATION
-LIMIT 50;
+LIMIT 20;
