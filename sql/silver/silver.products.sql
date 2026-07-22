@@ -21,7 +21,7 @@ SHOW COLUMNS IN TABLE BRONZE.PRODUCTS;
 SELECT
         COUNT(*) AS total_rows,
         COUNT(DISTINCT PRODUCT_Id) AS unique_product_id_rows
-FROM bronze.products
+FROM bronze.products;
 -- Result: No duplicates
 ------------------------
 -- 2:Check for Nulls
@@ -49,22 +49,21 @@ FROM BRONZE.PRODUCTS;
 ---------------------
 -- Check For Nulls
 -------------------
-=====================================
+-- =====================================
 SELECT COUNT(*) AS Total_Null_ROWS 
 FROM BRONZE.PRODUCTS
 WHERE PRODUCT_CATEGORY_NAME IS NULL;
 -- Result: 610 ROWS 
 -------------------
-======================================
+-- ======================================
 -- 2:Check duplicates 
 ----------------------
 SELECT 
         COUNT(*) AS TOTAL_ROWS,
         COUNT(DISTINCT PRODUCT_CATEGORY_NAME) as unique_PRODUCT_CATEGORY_NAME
-FROM BRONZE.PRODUCTS
-
+FROM BRONZE.PRODUCTS;
 -- Result: Total_rows = 32951 | UNIQUE_PRODUCT_CATEGORY_NAME = 73
-=========================================
+-- =========================================
 -- =====================
 -- PRODUCT_NAME_LENGHT
 -- =====================
@@ -72,7 +71,7 @@ FROM BRONZE.PRODUCTS
 ------------------
 SELECT DISTINCT 
                 PRODUCT_NAME_LENGHT
-FROM BRONZE.Products
+FROM BRONZE.Products;
 -- 2:Check for negative values
 -------------------------------
 SELECT 
@@ -97,7 +96,7 @@ WHERE PRODUCT_NAME_LENGHT IS NULL;
 ----------------------
 SELECT DISTINCT 
                 PRODUCT_DESCRIPTION_LENGTH
-FROM BRONZE.Products
+FROM BRONZE.Products;
 ------------------------------
 -- 2:Check for negative values
 ------------------------------
@@ -155,7 +154,7 @@ WHERE PRODUCT_PHOTOS_QTY IS NULL;
 ---------------------
 SELECT DISTINCT 
                 PRODUCT_WEIGHT_G
-FROM bronze.products
+FROM bronze.products;
 -- 2:Check for negative values
 ------------------------------
 SELECT 
@@ -190,8 +189,10 @@ WHERE PRODUCT_PHOTOS_QTY IS NULL;
 --------------------
 SELECT DISTINCT 
                 PRODUCT_LENGTH_CM
-FROM bronze.products
+FROM bronze.products;
+-- ----------------------------
 -- 2: Check for negative values
+-- ---------------------------
 SELECT 
         COUNT(*) AS TOTAL_NEGATIVE_VALUES
 FROM BRONZE.PRODUCTS
@@ -307,7 +308,8 @@ WHERE PRODUCT_WIDTH_CM IS NULL;
 -- ===================================================================================================
 -- Inspect the 610 Values
 
-SELECT * 
+SELECT 
+        product_id
 FROM BRONZE.PRODUCTS 
 WHERE 
     PRODUCT_CATEGORY_NAME IS NULL
@@ -367,4 +369,4 @@ SELECT
         PRODUCT_LENGTH_CM,
         PRODUCT_HEIGHT_CM,
         PRODUCT_WIDTH_CM
-FROM BRONZE.products 
+FROM BRONZE.products;

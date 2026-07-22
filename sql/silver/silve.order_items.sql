@@ -44,7 +44,7 @@ WITH unique_order_items AS (
 SELECT 
         (SELECT COUNT(*) AS TOTAL_ROWS FROM BRONZE.ORDER_ITEMS) as total_rows,
         COUNT(*) AS unique_combinations
-FROM unique_order_items
+FROM unique_order_items;
 ---------------------------------------------------------------
 --Result: None
 --- Investigation:
@@ -59,9 +59,10 @@ FROM unique_order_items
 -- product_id is a foreign key and is not expected to be unique.
 -- The same product can appear in multiple order items.
 ---------------------------------------------------------------
+SELECT
         COUNT(*) AS total_rows,
         COUNT(DISTINCT PRODUCT_ID) AS unique_product_id_rows
-FROM BRONZE.ORDER_ITEMS
+FROM BRONZE.ORDER_ITEMS;
 ---------------------
 -- Check for NULLS
 ---------------------
@@ -86,8 +87,8 @@ WHERE SELLER_ID IS NULL;
 -- Inspect columns
 ---------------------
 SELECT 
-       DISTINCT seller
-FROM BRONZE.ORDER_ITEMS
+       DISTINCT seller_id
+FROM BRONZE.ORDER_ITEMS;
 --======================================
 -- SHIPPING_LIMIT_DATE
 --======================================
@@ -161,4 +162,4 @@ SELECT
         SHIPPING_LIMIT_DATE,
         PRICE,
         FREIGHT_VALUE
-FROM BRONZE.ORDER_ITEMS
+FROM BRONZE.ORDER_ITEMS;

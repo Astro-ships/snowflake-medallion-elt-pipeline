@@ -40,7 +40,7 @@ WHERE seller_id IS NULL;
 SELECT 
         COUNT(*) as total_rows,
         COUNT(DISTINCT seller_id) as unique_ids
-FROM BRONZE.sellers
+FROM BRONZE.sellers;
 ---------------------------------
 -- Result: All identifiers unique.
 --======================================
@@ -65,7 +65,7 @@ SELECT
         LENGTH(SELLER_ZIP_CODE_PREFIX) as Prefix_Length
 FROM bronze.sellers
 GROUP BY Prefix_Length
-ORDER BY Prefix_Length
+ORDER BY Prefix_Length;
 ----------------------------------------
 -- Result:
 -- Some ZIP code prefixes contain fewer 
@@ -87,7 +87,7 @@ WHERE SELLER_CITY IS NULL;
 --Inspect data:SELLER_CITY
 SELECT 
         DISTINCT SELLER_CITY
-FROM bronze.sellers
+FROM bronze.sellers;
 
 --Lower case values found, will standardize in transfromation
 --======================================
@@ -107,7 +107,7 @@ WHERE SELLER_STATE IS NULL;
 ---------------------------------
 SELECT 
        DISTINCT SELLER_STATE
-FROM bronze.sellers
+FROM bronze.sellers;
 ---------------------------------
 --Values are standardized
 ---------------------------------
@@ -134,7 +134,7 @@ GROUP BY SELLER_ZIP_CODE_PREFIX_LENGTH;
 SELECT
         DISTINCT SELLER_CITY AS Original_seller_city,
         INITCAP(SELLER_CITY) AS standard_seller_city
-FROM BRONZE.SELLERS
+FROM BRONZE.SELLERS;
 
 -- ===========================================================
 -- Create table Silver.Sellers
@@ -147,7 +147,7 @@ SELECT
        LPAD(SELLER_ZIP_CODE_PREFIX,5,'0') AS SELLER_ZIP_CODE_PREFIX,
        INITCAP(SELLER_CITY) AS seller_city,
        SELLER_STATE
-FROM BRONZE.SELLERS
+FROM BRONZE.SELLERS;
 -- ===========================================================
 -- VALIDATE TABLE
 -- ===========================================================

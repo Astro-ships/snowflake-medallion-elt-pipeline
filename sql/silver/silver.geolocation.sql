@@ -100,7 +100,7 @@ WHERE GEOLOCATION_CITY IS NULL;
 ------------------------------------------
 SELECT 
       DISTINCT  GEOLOCATION_CITY
-FROM BRONZE.GEOLOCATION
+FROM BRONZE.GEOLOCATION;
 ---------------------------------------------------------------
 -- Result:
 -- Multiple formatting inconsistencies were found, including
@@ -124,7 +124,7 @@ WHERE GEOLOCATION_STATE IS NULL;
 ---------------------------------------------
 SELECT
       DISTINCT  GEOLOCATION_STATE
-FROM BRONZE.GEOLOCATION
+FROM BRONZE.GEOLOCATION;
 -------------------------------
 -- Result: Data is consistent
 -- ===========================================================
@@ -163,12 +163,11 @@ AS
          (TRANSLATE(INITCAP(LOWER(REPLACE(geolocation_city, 'Sa£o', 'São'))),'áàâãéêíóôõúç',
         'aaaaeeiooouc') ) as geolocation_city,
          geolocation_state
-   FROM BRONZE.geolocation;
+FROM BRONZE.geolocation;
 
 -- ===========================================================
 -- Validate table 
 -- ===========================================================
-SELECT 
-        *
+SELECT  *
 FROM SILVER.GEOLOCATION
-LIMIT 20;
+LIMIT 10;

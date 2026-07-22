@@ -22,7 +22,7 @@ SHOW COLUMNS IN TABLE BRONZE.CUSTOMERS;
 SELECT 
         COUNT(*) AS total_rows,
         COUNT(DISTINCT customer_id) AS Total_unique_ids
-FROM BRONZE.CUSTOMERS
+FROM BRONZE.CUSTOMERS;
 ------------------------------------------
 -- Check customer_id NULL values
 ------------------------------------------
@@ -112,7 +112,7 @@ LIMIT 50;
 SELECT 
        DISTINCT customer_city AS original_city,
        INITCAP(LOWER(customer_city)) AS standardized_city
-FROM BRONZE.CUSTOMERS
+FROM BRONZE.CUSTOMERS;
 
 -- ==========================================================
 -- CREATE STANDARDIZED SILVER LAYER CUSTOMER TABLE
@@ -125,5 +125,5 @@ SELECT
         LPAD(CUSTOMER_ZIP_CODE_PREFIX,5,'0') as customer_zip_code_prefix,
         LOWER(customer_city) AS customer_city,
         customer_state
-FROM BRONZE.CUSTOMERS
+FROM BRONZE.CUSTOMERS;
 

@@ -25,13 +25,13 @@ SHOW COLUMNS IN TABLE BRONZE.ORDER_REVIEWS;
 SELECT 
 COUNT(*) AS TOTAL_ROWS,
 COUNT(DISTINCT REVIEW_ID) AS unique_review_id
-FROM BRONZE.ORDER_REVIEWS
+FROM BRONZE.ORDER_REVIEWS;
 ------------------------------------------
 -- Result: Duplicates found.
 -- Check which rows are duplicates.
 ------------------------------------------
 SELECT
-    review_id
+    review_id,
     COUNT(*) AS occurrences
 FROM BRONZE.ORDER_REVIEWS
 GROUP BY review_id,order_id
@@ -139,7 +139,7 @@ SELECT COUNT(*) AS Total_Nulls
 FROM BRONZE.ORDER_REVIEWS
 WHERE REVIEW_CREATION_DATE IS NULL;
 ---------------------
--- 2:Inspect Column|
+-- 2:Inspect Column
 ---------------------
 SELECT 
         REVIEW_CREATION_DATE
@@ -171,6 +171,11 @@ WHERE REVIEW_ANSWER_TIMESTAMP IS NULL;
 CREATE OR REPLACE TABLE SILVER.ORDER_REVIEWS AS 
 SELECT 
         *
-FROM BRONZE.ORDER_REVIEWS
+FROM BRONZE.ORDER_REVIEWS;
 
 ---------------------------------------------------------------
+-- Validate table 
+-- -------------------- 
+SELECT  *
+FROM SILVER.ORDER_REVIEWS
+LIMIT 10;

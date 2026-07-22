@@ -19,7 +19,7 @@ SHOW COLUMNS IN TABLE BRONZE.ORDERS;
 SELECT 
 COUNT(*) as total_rows,
 COUNT(DISTINCT order_id) as unique_order_id
-FROM BRONZE.ORDERS 
+FROM BRONZE.ORDERS;
 ------------------------------------------
 -- Check order_id NULLS
 ------------------------------------------
@@ -33,7 +33,7 @@ WHERE order_id IS NULL;
 SELECT 
 COUNT(*) as total_rows,
 count(DISTINCT customer_id) as unique_customer_id
-FROM BRONZE.orders
+FROM BRONZE.orders;
 
 ------------------------------------------
 -- Check for customer_id Nulls
@@ -181,11 +181,11 @@ SELECT
         ORDER_DELIVERED_CARRIER_DATE,
         ORDER_DELIVERED_CUSTOMER_DATE,
         ORDER_ESTIMATED_DELIVERY_DATE
-FROM BRONZE.ORDERS
+FROM BRONZE.ORDERS;
 
 -- ==========================================================
 -- Validate table 
 -- ==========================================================
 
 SELECT * FROM SILVER.ORDERS 
-LIMIT 50;
+LIMIT 10;

@@ -21,7 +21,7 @@ SHOW COLUMNS IN TABLE BRONZE.PRODUCT_CATEGORY;
 ---------------------
 SELECT DISTINCT 
                 PRODUCT_CATEGORY_NAME
-FROM BRONZE.PRODUCT_CATEGORY
+FROM BRONZE.PRODUCT_CATEGORY;
 -----------------------------
 -- 2:Check for NULLS
 ---------------------------- 
@@ -47,8 +47,8 @@ HAVING COUNT(*) > 1;
 --------------------
 SELECT 
         DISTINCT PRODUCT_CATEGORY_NAME_ENGLISH
-FROM BRONZE.PRODUCT_CATEGORY
----------------------
+FROM BRONZE.PRODUCT_CATEGORY;
+---------------------;
 -- 2:Check Nulls
 ---------------------
 SELECT 
@@ -97,4 +97,4 @@ HAVING COUNT(*) > 1;
 CREATE OR REPLACE TABLE SILVER.product_category
 AS 
 SELECT *
-FROM BRONZE.PRODUCT_CATEGORY
+FROM BRONZE.PRODUCT_CATEGORY;
