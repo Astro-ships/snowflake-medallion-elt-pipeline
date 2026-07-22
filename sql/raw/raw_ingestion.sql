@@ -436,7 +436,7 @@ FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
 VALIDATION_MODE=RETURN_ERRORS;
 
 -- =============================================================
--- Load data into table RAW.SELLERS
+-- Load data into table RAW.SELLERSPRODUCTS_CATEGORY
 -- =============================================================
 COPY INTO RAW.PRODUCT_CATEGORY
 FROM @ecom_stage/product_category_name_translation.csv.gz

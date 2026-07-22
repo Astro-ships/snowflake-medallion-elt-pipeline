@@ -150,7 +150,7 @@ WHERE FREIGHT_VALUE < 0;
 -- ORDER_ITEMS Will be loaded into the Silver layer without modification.
 
 -- ==========================================================
--- Create Table
+-- Create Table SILVER.ORDER_ITEMS
 -- ==========================================================
 CREATE OR REPLACE TABLE SILVER.ORDER_ITEMS
 AS 
