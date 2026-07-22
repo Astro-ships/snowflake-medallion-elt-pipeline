@@ -20,7 +20,7 @@ SELECT
         "order_delivered_customer_date" AS order_delivered_customer_date,
         "order_estimated_delivery_date" AS order_estimated_delivery_date
 
-FROM RAW.ORDERS
+FROM RAW.ORDERS;
 
 -- ==========================================================
 -- Validate Table

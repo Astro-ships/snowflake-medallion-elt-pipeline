@@ -19,7 +19,7 @@ SELECT
         "product_length_cm" AS product_length_cm,
         "product_height_cm" AS product_height_cm,
         "product_width_cm" AS product_width_cm 
-FROM RAW.products
+FROM RAW.products;
 -- ==========================================================
 -- Validate Table
 -- ==========================================================

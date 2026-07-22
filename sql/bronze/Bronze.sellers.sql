@@ -15,7 +15,7 @@ SELECT
         "seller_zip_code_prefix" AS seller_zip_code_prefix,
         "seller_city" AS  seller_city,
         "seller_state" AS seller_state 
-FROM RAW.SELLERS
+FROM RAW.SELLERS;
 
 -- ==========================================================
 -- Validate Table

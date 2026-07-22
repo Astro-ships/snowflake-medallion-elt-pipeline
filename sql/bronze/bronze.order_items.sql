@@ -19,7 +19,7 @@ SELECT
     "shipping_limit_date" AS shipping_limit_date,
     "price" AS price,
     "freight_value" AS freight_value
-FROM RAW.ORDER_ITEMS
+FROM RAW.ORDER_ITEMS;
 -- ==========================================================
 -- Validate Table
 -- ==========================================================
