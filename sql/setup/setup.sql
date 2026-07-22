@@ -25,7 +25,7 @@ CREATE OR REPLACE SCHEMA gold;
 -- ==========================================================
 -- Create an internal stage for raw source files
 -- ==========================================================
-USE WAREHOUSE;
+USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA RAW;
 CREATE OR REPLACE STAGE ecom_stage;
@@ -36,4 +36,4 @@ CREATE OR REPLACE STAGE ecom_stage;
 CREATE OR REPLACE FILE FORMAT csv_format
 TYPE='CSV'
 SKIP_HEADER = 1 
-FIELD_OPTIONALLY_ENCLOSED_BY='"'
+FIELD_OPTIONALLY_ENCLOSED_BY='"';
