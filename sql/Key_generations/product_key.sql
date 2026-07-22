@@ -89,3 +89,33 @@ SELECT *
 FROM product_keys
 ORDER BY product_key
 LIMIT 50;
+
+-- ==========================================================
+-- Prerequisite: Surrogate Key Generation
+-- ==========================================================
+-- Silver Layer must already exist
+-- ------------------------------
+CREATE OR REPLACE TABLE GOLD.DIM_PRODUCTS AS
+
+SELECT DISTINCT
+                pk.product_key,
+                sp.product_id,
+                sp.product_category_name,
+                sp.product_name_length,
+                sp.product_description_length,
+                sp.product_photos_qty,
+                sp.product_weight_g,
+                sp.product_length_cm,
+                sp.product_height_cm,
+                sp.product_width_cm
+FROM SILVER.PRODUCTS AS sp 
+INNER JOIN product_keys as pk 
+ON
+pk.product_id = sp.product_id;
+----------------------------------
+-- Inspect table
+-----------------------------------
+SELECT *
+FROM dim_products
+ORDER BY product_key
+LIMIT 50;
