@@ -37,3 +37,12 @@ CREATE OR REPLACE FILE FORMAT csv_format
 TYPE='CSV'
 SKIP_HEADER = 1 
 FIELD_OPTIONALLY_ENCLOSED_BY='"';
+
+-- ==========================================
+-- File format for InferSchema 
+-- ===========================================
+
+CREATE FILE FORMAT IF NOT EXISTS infer_schema_csv 
+TYPE='CSV'
+PARSE_HEADER=TRUE
+FIELD_OPTIONALLY_ENCLOSED_BY='"';
