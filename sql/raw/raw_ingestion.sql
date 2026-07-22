@@ -113,7 +113,7 @@ USING TEMPLATE(
                                 FILES=>('olist_geolocation_dataset.csv.gz')
                             )
                 )
-)
+);
 
 -- ============================================
 -- Validate staged data
@@ -128,6 +128,7 @@ VALIDATION_MODE=RETURN_ERRORS;
 -- ============================================
 -- Load data into RAW.GEOLOCATION
 -- ============================================
+COPY INTO raw.geolocation 
 FROM @ecom_stage/olist_geolocation_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
 ON_ERROR=CONTINUE;
