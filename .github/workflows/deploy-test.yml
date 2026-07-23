@@ -18,17 +18,45 @@ jobs:
             SNOWFLAKE_ROLE: ${{secrets.SNOWFLAKE_ROLE}}
             SNOWFLAKE_WAREHOUSE: ${{secrets.SNOWFLAKE_WAREHOUSE}}
 
-# Step 1:
+# ----------------------------------------
+# Step 1 - Checkout Repository 
+# ----------------------------------------
         steps:
             - name: Checkout Repository 
               uses: actions/checkout@v4
-# Step 2:
+# ----------------------------------------
+# Step 2 - Install Snowflake CLI
+# ----------------------------------------
             - name: Install Snowflake CLI
               run: |
                 python -m pip install --upgrade pip
                 pip install snowflake-cli
-
-# Step 3: 
+# ----------------------------------------
+# Step 3 - Verify Snowflake CLI
+# ---------------------------------------- 
             - name: Verify Snowflake CLI
               run: |
                  snow --version
+# ----------------------------------------
+# Step 4 - Confitgure Snoflake Connection
+# ----------------------------------------
+            - name: Configure Snowflake Connection
+              run: | 
+                  mkdir -p ~/.snowflake
+                  cat > ~/.snowflake/connections.toml << EOF
+                  [github_actions]
+                  account = "$SNOWFLAKE_ACCOUNT"
+                  user = "$SNOWFLAKE_USER"
+                  password = "$SNOWFLAKE_PASSWORD"
+                  role = "$SNOWFLAKE_ROLE"
+                  warehouse = "$SNOWFLAKE_WAREHOUSE"
+                  EOF
+                  chmod 600 ~/.snowflake/connections.toml
+# ----------------------------------------
+# Step 5 - Test Snowflake Authentication
+# ----------------------------------------
+            - name: Test Snowflake Authentication
+              run: |
+                snow sql\
+                --connection github_actions \
+                --query "SELECT CURRENT_ACCOUNT(),CURRENT_ROLE(),CURRENT_WAREHOUSE(); "
