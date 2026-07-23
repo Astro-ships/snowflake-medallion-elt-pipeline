@@ -1,9 +1,9 @@
 -- ==========================================================
 -- Configure Snowflake Session
 -- ==========================================================
-USE ROLE ACCOUNTADMIN;
-USE WAREHOUSE COMPUTE_WH;
-USE DATABASE ECOMMERCE_DB;
+-- USE ROLE GITHUB_ACTIONS_ROLE;
+ USE WAREHOUSE COMPUTE_WH;
+ USE DATABASE ECOMMERCE_DB;
 
 CREATE SCHEMA IF NOT EXISTS ANALYTICS;
 USE SCHEMA ANALYTICS;

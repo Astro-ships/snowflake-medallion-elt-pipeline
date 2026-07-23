@@ -61,3 +61,11 @@ jobs:
                 -c github_actions \
                 -q "SELECT CURRENT_ACCOUNT(),CURRENT_ROLE(),CURRENT_WAREHOUSE(); "
 
+# ----------------------------------------
+# Step 6 - Deploy Snowflake Pipeline
+# ----------------------------------------
+            - name : Deploy test to Snowflake
+              run: |
+                 snow sql \
+                 -c github_actions \
+                 -f deployment/Ecommerce_test/deploy.sql
