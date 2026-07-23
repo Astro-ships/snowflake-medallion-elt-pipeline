@@ -1,9 +1,10 @@
 -- ==========================================================
 -- Configure Snowflake session
 -- ==========================================================
-USE ROLE ACCOUNTADMIN;
+-- USE ROLE GITHUB_ACTIONS_ROLE;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
+CREATE SCHEMA IF NOT EXISTS BRONZE;
 USE SCHEMA BRONZE;
 
 -- ==========================================================

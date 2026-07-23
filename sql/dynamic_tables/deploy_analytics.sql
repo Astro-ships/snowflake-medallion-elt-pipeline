@@ -1,7 +1,7 @@
 -- ==========================================================
 -- Configure Snowflake Session
 -- ==========================================================
-USE ROLE ACCOUNTADMIN;
+-- USE ROLE GITHUB_ACTIONS_ROLE;
 USE WAREHOUSE COMPUTE_WH;
 USE DATABASE ECOMMERCE_DB;
 

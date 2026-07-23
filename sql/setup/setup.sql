@@ -28,7 +28,7 @@ CREATE OR REPLACE SCHEMA gold;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA RAW;
-CREATE OR REPLACE STAGE ecom_stage;
+CREATE STAGE IF NOT EXISTS ecom_stage;
 -- ==========================================================
 -- THE FILE FORMAT THE DATA WILL USE TO PARSE INTO TABLE
 -- ==========================================================

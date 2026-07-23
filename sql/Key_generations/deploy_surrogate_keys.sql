@@ -1,7 +1,8 @@
+deploy_key:
 -- ==========================================================
 -- Configure Snowflake session
 -- ==========================================================
-USE ROLE GITHUB_ACTIONS_ROLE;
+-- USE ROLE GITHUB_ACTIONS_ROLE;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA GOLD;
@@ -102,33 +103,17 @@ sk.seller_id = ss.seller_id;
 --  FACT PAYMENTS
 -- ================================
 
-
 CREATE OR REPLACE TABLE GOLD.FACT_PAYMENTS AS
 
 SELECT
 
--- ==========================================================
--- Composite Key (Degenerate Dimension)
--- ==========================================================
     sp.order_id,
     sp.payment_sequential,
-
--- ==========================================================
--- Foreign Key (Surrogate Key)
--- ==========================================================
     ck.customer_key,
-
--- ==========================================================
--- Transaction Attributes
--- ==========================================================
     so.order_status,
     sp.payment_type,
     sp.payment_installments,
     so.order_purchase_timestamp,
-
--- ==========================================================
--- Measure
--- ==========================================================
     sp.payment_value
 
 FROM SILVER.ORDER_PAYMENTS AS sp
@@ -147,43 +132,21 @@ CREATE OR REPLACE TABLE GOLD.FACT_SALES AS
 
 SELECT
 
--- ==========================================================
--- Degnerate Dimension
--- ==========================================================
     oi.order_id,
     oi.order_item_id,
-
--- ==========================================================
--- Foreign Keys
--- ==========================================================
     ck.customer_id,
     pk.product_id,
     sk.seller_id,
-
--- ==========================================================
--- Transaction Attributes
--- ==========================================================
     o.order_status,
     o.order_purchase_timestamp,
     oi.shipping_limit_date,
-
--- ==========================================================
--- Delivery Information
--- ==========================================================
     o.order_estimated_delivery_date,
     o.order_delivered_carrier_date,
     o.order_delivered_customer_date,
-
--- ==========================================================
--- Measures
--- ==========================================================
     oi.price AS sales_amount,
     oi.freight_value AS shipping_cost
 
 FROM SILVER.ORDER_ITEMS AS oi
--- ================================================
--- Joins: Order is being joined with keys 
--- ==============================================
 INNER JOIN SILVER.ORDERS AS o
 ON 
 oi.order_id = o.order_id
@@ -197,35 +160,17 @@ INNER JOIN  seller_keys  AS sk
 ON 
 oi.seller_id = sk.seller_id;
 
--- ==================
---  fact_reviews
--- ===================
 
 
 CREATE OR REPLACE TABLE GOLD.FACT_REVIEWS AS
 
 SELECT
 
--- ==========================================================
--- Composite Key (Degenerate Dimensions)
--- ==========================================================
     sr.review_id,
     sr.order_id,
-
--- ==========================================================
--- Foreign Key (Surrogate Key)
--- ==========================================================
     ck.customer_key,
-
--- ==========================================================
--- Review Attributes
--- ==========================================================
     sr.review_creation_date,
     sr.review_answer_timestamp,
-
--- ==========================================================
--- Measure
--- ==========================================================
     sr.review_score
 
 FROM SILVER.ORDER_REVIEWS AS sr

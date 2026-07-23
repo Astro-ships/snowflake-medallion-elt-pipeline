@@ -24,3 +24,5 @@
  !source sql/key_generations/deploy_surrogate_keys.sql
  -- Analytics 
  !source sql/dynamic_tables/deploy_analytics.sql
+ -- pipeline build 
+ 

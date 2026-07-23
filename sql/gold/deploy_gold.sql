@@ -1,7 +1,8 @@
+
 -- ==========================================================
 -- Configure Snowflake session
 -- ==========================================================
-USE ROLE GITHUB_ACTIONS_ROLE;
+-- USE ROLE GITHUB_ACTIONS_ROLE;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA GOLD;
@@ -110,7 +111,7 @@ INNER JOIN SILVER.ORDERS AS o
     ON oi.order_id = o.order_id;
 
 -- ======================
---  CLUSTER
+--  CLUSTER BY 
 -- ======================
 ALTER TABLE GOLD.fact_sales 
 CLUSTER BY (fact_sales.order_purchase_timestamp);
