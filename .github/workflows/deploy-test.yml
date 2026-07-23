@@ -58,5 +58,5 @@ jobs:
             - name: Test Snowflake Authentication
               run: |
                 snow sql\
-                --connection github_actions \
-                --query "SELECT CURRENT_ACCOUNT(),CURRENT_ROLE(),CURRENT_WAREHOUSE(); "
+                -c github_actions \
+                -q "SELECT CURRENT_ACCOUNT(),CURRENT_ROLE(),CURRENT_WAREHOUSE(); "
