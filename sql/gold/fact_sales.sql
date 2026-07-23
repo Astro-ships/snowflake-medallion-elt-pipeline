@@ -49,6 +49,48 @@ USE SCHEMA GOLD;
 -- ==========================================================
 -- Create Gold.Fact table
 --==========================================================
+CREATE OR REPLACE TABLE GOLD.FACT_SALES AS
+
+SELECT
+
+-- ==========================================================
+-- Degenerate Dimension
+-- ==========================================================
+    oi.order_id,
+    oi.order_item_id,
+
+-- ==========================================================
+-- Natural Foreign Keys
+-- ==========================================================
+    o.customer_id,
+    oi.product_id,
+    oi.seller_id,
+
+-- ==========================================================
+-- Transaction Attributes
+-- ==========================================================
+    o.order_status,
+    o.order_purchase_timestamp,
+    oi.shipping_limit_date,
+
+-- ==========================================================
+-- Delivery Information
+-- ==========================================================
+    o.order_estimated_delivery_date,
+    o.order_delivered_carrier_date,
+    o.order_delivered_customer_date,
+
+-- ==========================================================
+-- Measures
+-- ==========================================================
+    oi.price AS sales_amount,
+    oi.freight_value AS shipping_cost
+
+FROM SILVER.ORDER_ITEMS AS oi
+
+INNER JOIN SILVER.ORDERS AS o
+    ON oi.order_id = o.order_id;
+    
 /*
 ==========================================================
 Surrogate Key Integration
@@ -81,9 +123,9 @@ SELECT
 -- ==========================================================
 -- Foreign Keys
 -- ==========================================================
-    ck.customer_key,
-    pk.product_key,
-    sk.seller_key,
+    ck.customer_id,
+    pk.product_id,
+    sk.seller_id,
 
 -- ==========================================================
 -- Transaction Attributes

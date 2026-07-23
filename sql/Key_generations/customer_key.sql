@@ -89,31 +89,3 @@ SELECT *
 FROM customer_keys
 ORDER BY customer_key
 LIMIT 50;
-
--- ==========================================================
--- Prerequisite: Surrogate Key Generation
--- ==========================================================
--- Gold and Silver layer must exists 
--------------------------------------------------------
-CREATE OR REPLACE TABLE GOLD.dim_customers 
-AS 
-SELECT 
-DISTINCT 
-    ck.customer_key,
-    sc.customer_id,
-    sc.customer_unique_id,
-    sc.customer_zip_code_prefix,
-    sc.customer_city,
-    sc.customer_state
-FROM silver.customers AS sc
-INNER JOIN customer_keys as ck 
-ON 
-sc.customer_id = ck.customer_id ;
-
--------------------
--- Inspect table 
--------------------
-SELECT * 
-FROM dim_customers
-ORDER BY customer_key 
-LIMIT 50;

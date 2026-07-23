@@ -1,0 +1,71 @@
+
+name: Deploy Snowflake Pipeline 
+
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        name: Deploy to test snowflake
+        runs-on: ubuntu-latest 
+        env:
+            SNOWFLAKE_ACCOUNT: ${{secrets.SNOWFLAKE_ACCOUNT}}
+            SNOWFLAKE_USER: ${{secrets.SNOWFLAKE_USER}}
+            SNOWFLAKE_PASSWORD: ${{secrets.SNOWFLAKE_PASSWORD}}
+            SNOWFLAKE_ROLE: ${{secrets.SNOWFLAKE_ROLE}}
+            SNOWFLAKE_WAREHOUSE: ${{secrets.SNOWFLAKE_WAREHOUSE}}
+
+# ----------------------------------------
+# Step 1 - Checkout Repository 
+# ----------------------------------------
+        steps:
+            - name: Checkout Repository 
+              uses: actions/checkout@v4
+# ----------------------------------------
+# Step 2 - Install Snowflake CLI
+# ----------------------------------------
+            - name: Install Snowflake CLI
+              run: |
+                python -m pip install --upgrade pip
+                pip install snowflake-cli
+# ----------------------------------------
+# Step 3 - Verify Snowflake CLI
+# ---------------------------------------- 
+            - name: Verify Snowflake CLI
+              run: |
+                 snow --version
+# ----------------------------------------
+# Step 4 - Confitgure Snoflake Connection
+# ----------------------------------------
+            - name: Configure Snowflake Connection
+              run: | 
+                  mkdir -p ~/.snowflake
+                  cat > ~/.snowflake/connections.toml << EOF
+                  [github_actions]
+                  account = "$SNOWFLAKE_ACCOUNT"
+                  user = "$SNOWFLAKE_USER"
+                  password = "$SNOWFLAKE_PASSWORD"
+                  role = "$SNOWFLAKE_ROLE"
+                  warehouse = "$SNOWFLAKE_WAREHOUSE"
+                  EOF
+                  chmod 600 ~/.snowflake/connections.toml
+# ----------------------------------------
+# Step 5 - Test Snowflake Authentication
+# ----------------------------------------
+            - name: Test Snowflake Authentication
+              run: |
+                snow sql \
+                -c github_actions \
+                -q "SELECT CURRENT_ACCOUNT(),CURRENT_ROLE(),CURRENT_WAREHOUSE(); "
+
+# ----------------------------------------
+# Step 6 - Deploy Snowflake Pipeline
+# ----------------------------------------
+            - name : Deploy test to Snowflake
+              run: |
+                 snow sql \
+                 -c github_actions \
+                 -f deployment/Ecommerce_test/deploy.sql

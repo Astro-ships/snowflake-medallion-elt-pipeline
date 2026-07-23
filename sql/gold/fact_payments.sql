@@ -21,6 +21,39 @@ USE SCHEMA GOLD;
 -- payment_value
 -- ==========================================================
 
+CREATE OR REPLACE TABLE GOLD.FACT_PAYMENTS AS
+
+SELECT
+
+-- ==========================================================
+-- Composite Key (Degenerate Dimension)
+-- ==========================================================
+    sp.order_id,
+    sp.payment_sequential,
+
+-- ==========================================================
+-- Foreign Key
+-- ==========================================================
+    so.customer_id,
+
+-- ==========================================================
+-- Transaction Attributes
+-- ==========================================================
+    so.order_status,
+    so.order_purchase_timestamp,
+    sp.payment_type,
+    sp.payment_installments,
+
+-- ==========================================================
+-- Measure
+-- ==========================================================
+    sp.payment_value
+
+FROM SILVER.ORDER_PAYMENTS AS sp
+
+INNER JOIN SILVER.ORDERS AS so
+    ON sp.order_id = so.order_id;
+
 /*
 ==========================================================
 Surrogate Key Integration

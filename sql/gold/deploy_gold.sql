@@ -1,7 +1,7 @@
 -- ==========================================================
 -- Configure Snowflake session
 -- ==========================================================
-USE ROLE ACCOUNTADMIN;
+USE ROLE GITHUB_ACTIONS_ROLE;
 USE WAREHOUSE compute_wh;
 USE DATABASE ecommerce_db;
 USE SCHEMA GOLD;
@@ -53,63 +53,49 @@ FROM SILVER.SELLERS;
 -- ==================
 -- Fact_payment
 -- =================
-
-
 CREATE OR REPLACE TABLE GOLD.FACT_PAYMENTS AS
 
 SELECT
-
     sp.order_id,
     sp.payment_sequential,
-    ck.customer_key,
+    so.customer_id,
     so.order_status,
+    so.order_purchase_timestamp,
     sp.payment_type,
     sp.payment_installments,
-    so.order_purchase_timestamp,
     sp.payment_value
-
 FROM SILVER.ORDER_PAYMENTS AS sp
-
 INNER JOIN SILVER.ORDERS AS so
-    ON sp.order_id = so.order_id
-
-INNER JOIN CUSTOMER_KEYS AS ck
-    ON so.customer_id = ck.customer_id;
+    ON sp.order_id = so.order_id;
 
 -- =======================
--- Fact Review
--- =======================
-
-CREATE OR REPLACE TABLE GOLD.FACT_REVIEWS AS
-
-SELECT
+-- Fact_reviews
+-- ========================
+CREAtE OR REPLaCE TABLE GOLD.FACT_REVIEWS AS 
+SELECT DISTINCT
     sr.review_id,
     sr.order_id,
-    ck.customer_key,
+    so.customer_id,
     sr.review_creation_date,
     sr.review_answer_timestamp,
     sr.review_score
+FROM SILVER.ORDER_REVIEWS AS sr 
+INNER JOIN  SILVER.ORDERS AS SO 
+ON 
+sr.order_id=so.order_id;
 
-FROM SILVER.ORDER_REVIEWS AS sr
-
-INNER JOIN SILVER.ORDERS AS so
-    ON sr.order_id = so.order_id
-
-INNER JOIN CUSTOMER_KEYS AS ck
-    ON so.customer_id = ck.customer_id;
 
 -- ================
 -- FACT _Sales
 -- ================
 CREATE OR REPLACE TABLE GOLD.FACT_SALES AS
 
-SELECT
-
+SELECT DISTINCT
     oi.order_id,
     oi.order_item_id,
-    ck.customer_key,
-    pk.product_key,
-    sk.seller_key,
+    o.customer_id,
+    oi.product_id,
+    oi.seller_id,
     o.order_status,
     o.order_purchase_timestamp,
     oi.shipping_limit_date,
@@ -119,15 +105,15 @@ SELECT
     oi.price AS sales_amount,
     oi.freight_value AS shipping_cost
 FROM SILVER.ORDER_ITEMS AS oi
+
 INNER JOIN SILVER.ORDERS AS o
-ON 
-oi.order_id = o.order_id
-INNER JOIN CUSTOMER_KEYS AS ck
-ON
-o.customer_id = ck.customer_id
-INNER JOIN product_keys AS pk 
-ON 
-oi.product_id = pk.product_id 
-INNER JOIN  seller_keys  AS sk 
-ON 
-oi.seller_id = sk.seller_id;
+    ON oi.order_id = o.order_id;
+
+-- ======================
+--  CLUSTER
+-- ======================
+ALTER TABLE GOLD.fact_sales 
+CLUSTER BY (fact_sales.order_purchase_timestamp);
+
+ALTER TABLE GOLD.FACT_PAYMENTS 
+CLUSTER BY (FACT_PAYMENTS.ORDER_PURCHASE_TIMESTAMP);
