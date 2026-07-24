@@ -12,7 +12,7 @@ USE SCHEMA ANALYTICS;
 -- ====================
 
 
-CREATE  DYNAMIC TABLE MONTHLY_GROWTH
+CREATE DYNAMIC TABLE IF NOT EXISTS MONTHLY_GROWTH
 TARGET_LAG = '1 day'
 WAREHOUSE = COMPUTE_WH
 AS
@@ -58,7 +58,7 @@ FROM m_growth;
 -- monthly_sales
 -- ====================
 
-CREATE  DYNAMIC TABLE MONTHLY_SALES
+CREATE  DYNAMIC TABLE IF NOT EXISTS MONTHLY_SALES
 TARGET_LAG = '1 day'
 WAREHOUSE = COMPUTE_WH
 AS
@@ -72,7 +72,7 @@ GROUP BY 1;
 -- Top_monthly_product
 -- ==========================
 
-CREATE  DYNAMIC TABLE top_3_monthly_products
+CREATE DYNAMIC TABLE IF NOT EXISTS top_3_monthly_products
 TARGET_LAG = '1 day'
 WAREHOUSE =compute_wh
 AS 
