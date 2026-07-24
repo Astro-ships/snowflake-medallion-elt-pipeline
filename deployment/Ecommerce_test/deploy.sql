@@ -21,7 +21,7 @@
 --Gold layer
 !source sql/gold/deploy_gold.sql
  -- Surrogate Keys
-!source sql/key_generations/deploy_surrogate_keys.sql
+!source sql/Key_generations/deploy_surrogate_keys.sql
  -- Analytics 
 !source sql/dynamic_tables/deploy_analytics.sql
  -- pipeline build 
