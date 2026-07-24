@@ -30,7 +30,8 @@ USING TEMPLATE(
 COPY INTO raw.customers
 FROM @ecom_stage/olist_customers_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
-ON_ERROR=continue;
+ON_ERROR=continue
+FORCE=TRUE;
 
 -- ============================================
 -- Create RAW.GEOLOCATION using inferred schema
@@ -52,7 +53,8 @@ USING TEMPLATE(
 COPY INTO raw.geolocation 
 FROM @ecom_stage/olist_geolocation_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 
 -- ============================================
@@ -79,7 +81,8 @@ USING TEMPLATE(
 COPY INTO raw.order_items
 FROM  @ecom_stage/olist_order_items_dataset.csv.gz
 FILE_FORMAT='CSV_FORMAT'
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 -- =============================================================
 -- Create the RAW.ORDER_PAYMENTS table using the inferred schema
@@ -105,7 +108,8 @@ USING TEMPLATE (
 COPY INTO RAW.ORDER_PAYMENTS
 FROM @ecom_stage/olist_order_payments_dataset.csv.gz
 FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 
 
@@ -132,7 +136,8 @@ USING TEMPLATE(
 COPY INTO RAW.PRODUCTS
 FROM @ecom_stage/olist_products_dataset.csv.gz
 FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 
 CREATE OR REPLACE TABLE RAW.ORDERS_REVIEWS
@@ -154,7 +159,8 @@ USING TEMPLATE(
 COPY INTO RAW.ORDERS_REVIEWS 
 FROM @ecom_stage/olist_order_reviews_dataset.csv.gz
 FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 
 -- =============================================================
@@ -179,7 +185,8 @@ USING TEMPLATE (
 COPY INTO RAW.ORDERS
 FROM @ecom_stage/olist_orders_dataset.csv.gz
 FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 
 -- =============================================================
@@ -206,7 +213,8 @@ USING TEMPLATE (
 COPY INTO RAW.SELLERS
 FROM @ecom_stage/olist_sellers_dataset.csv.gz
 FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;
 
 
 -- ===============================================================
@@ -230,4 +238,5 @@ USING TEMPLATE(
 COPY INTO RAW.PRODUCT_CATEGORY
 FROM @ecom_stage/product_category_name_translation.csv.gz
 FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
-ON_ERROR=CONTINUE;
+ON_ERROR=CONTINUE
+FORCE=TRUE;

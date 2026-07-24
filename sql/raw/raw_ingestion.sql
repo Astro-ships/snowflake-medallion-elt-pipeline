@@ -25,7 +25,7 @@ SHOW FILE FORMATS;
 -- column names and data types from the source CSV files.
 -- ==========================================================
 
-CREATE OR REPLACE FILE FORMAT infer_schema_csv
+CREATE  FILE FORMAT IF NOT EXISTS infer_schema_csv
 TYPE = CSV 
 PARSE_HEADER = TRUE 
 FIELD_OPTIONALLY_ENCLOSED_BY='"';
@@ -436,7 +436,7 @@ FILE_FORMAT=(FORMAT_NAME='CSV_FORMAT')
 VALIDATION_MODE=RETURN_ERRORS;
 
 -- =============================================================
--- Load data into table RAW.SELLERSPRODUCTS_CATEGORY
+-- Load data into table RAW.Product_category
 -- =============================================================
 COPY INTO RAW.PRODUCT_CATEGORY
 FROM @ecom_stage/product_category_name_translation.csv.gz
