@@ -26,6 +26,9 @@ The project showcases end-to-end data engineering concepts including data ingest
 * Incoming:V1.4.1 - Add production layer.
 * **Note**: Please refer to deployment/ReadMe.md file for requirements.
 
+> **Workflow Status:**  
+> The GitHub Actions workflow has been validated successfully and is currently disabled to prevent unnecessary deployments during active development. See `deployment/README.md` for instructions on re-enabling automated deployments.
+
 > **Pipeline Execution Order**
 >
 > Infrastructure Bootstrap

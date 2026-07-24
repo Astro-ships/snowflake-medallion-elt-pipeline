@@ -10,6 +10,53 @@ The deployment is designed for use with the Snowflake CLI (`snow`) and GitHub Ac
 
 ---
 
+## GitHub Actions Workflow Status
+
+> **Note**
+>
+> The GitHub Actions workflow has been successfully implemented, tested, and validated.
+>
+> To prevent unnecessary deployments during active development, the workflow has been intentionally disabled by renaming the workflow file:
+>
+> ```text
+> .github/workflows/deploy-test.yml.disabled
+> ```
+>
+> Since GitHub Actions only executes files ending with `.yml` or `.yaml` inside the `.github/workflows/` directory, this file is ignored while remaining in the repository for future use.
+>
+> ### Re-enabling the Workflow
+>
+> To enable automated deployments again:
+>
+> 1. Navigate to:
+>
+> ```text
+> .github/workflows/
+> ```
+>
+> 2. Rename:
+>
+> ```text
+> deploy-test.yml.disabled
+> ```
+>
+> back to:
+>
+> ```text
+> deploy-test.yml
+> ```
+>
+> 3. Commit and push the change:
+>
+> ```bash
+> git add .github/workflows/deploy-test.yml
+> git commit -m "chore(ci/cd): re-enable deployment workflow"
+> git push
+> ```
+>
+> Once restored, GitHub Actions will automatically detect the workflow and resume CI/CD execution according to the configured triggers.
+
+
 # Deployment Environments
 
 ## Ecommerce_test
