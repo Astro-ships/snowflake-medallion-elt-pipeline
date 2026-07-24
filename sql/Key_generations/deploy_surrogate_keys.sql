@@ -1,182 +1,201 @@
-deploy_key:
 -- ==========================================================
--- Configure Snowflake session
+-- Configure Snowflake Session
 -- ==========================================================
 -- USE ROLE GITHUB_ACTIONS_ROLE;
-USE WAREHOUSE compute_wh;
-USE DATABASE ecommerce_db;
+USE WAREHOUSE COMPUTE_WH;
+USE DATABASE ECOMMERCE_DB;
 USE SCHEMA GOLD;
 
--- ===============
---  Customer_key
--- ===============
+-- ==========================================================
+-- CUSTOMER SURROGATE KEY
+-- ==========================================================
 
-CREATE OR REPLACE SEQUENCE customer_key_seq
+CREATE OR REPLACE SEQUENCE CUSTOMER_KEY_SEQ
 START = 1
 INCREMENT = 1;
--- ===================
--- GOLD dim_customers
--- ===================
-CREATE TABLE IF NOT EXISTS customer_keys AS
 
+-- Mapping table (Business Key → Surrogate Key)
+CREATE OR REPLACE TABLE CUSTOMER_KEYS AS
 SELECT
-    customer_key_seq.NEXTVAL AS customer_key,
-    customer_id
+    CUSTOMER_KEY_SEQ.NEXTVAL AS CUSTOMER_KEY,
+    CUSTOMER_ID
 FROM GOLD.DIM_CUSTOMERS;
 
-CREATE TABLE IF NOT EXISTS GOLD.dim_customers 
-AS 
-SELECT 
-DISTINCT 
-    ck.customer_key,
-    sc.customer_id,
-    sc.customer_unique_id,
-    sc.customer_zip_code_prefix,
-    sc.customer_city,
-    sc.customer_state
-FROM silver.customers AS sc
-INNER JOIN customer_keys as ck 
-ON 
-sc.customer_id = ck.customer_id ;
+-- Dimension Table
+CREATE OR REPLACE TABLE GOLD.DIM_CUSTOMERS AS
+SELECT DISTINCT
+    CK.CUSTOMER_KEY,
+    SC.CUSTOMER_ID,
+    SC.CUSTOMER_UNIQUE_ID,
+    SC.CUSTOMER_ZIP_CODE_PREFIX,
+    SC.CUSTOMER_CITY,
+    SC.CUSTOMER_STATE
+FROM SILVER.CUSTOMERS SC
+INNER JOIN CUSTOMER_KEYS CK
+    ON SC.CUSTOMER_ID = CK.CUSTOMER_ID;
 
--- =================
--- Produt_key
--- =================
+-- ==========================================================
+-- PRODUCT SURROGATE KEY
+-- ==========================================================
 
-CREATE OR REPLACE SEQUENCE product_key_seq
+CREATE OR REPLACE SEQUENCE PRODUCT_KEY_SEQ
 START = 1
 INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS product_keys AS
-
+CREATE OR REPLACE TABLE PRODUCT_KEYS AS
 SELECT
-    product_key_seq.NEXTVAL AS product_key,
-    product_id
+    PRODUCT_KEY_SEQ.NEXTVAL AS PRODUCT_KEY,
+    PRODUCT_ID
 FROM GOLD.DIM_PRODUCTS;
 
--- ------------------------------
-CREATE TABLE IF NOT EXISTS GOLD.DIM_PRODUCTS AS
-
+CREATE OR REPLACE TABLE GOLD.DIM_PRODUCTS AS
 SELECT DISTINCT
-                pk.product_key,
-                sp.product_id,
-                sp.product_category_name,
-                sp.product_name_length,
-                sp.product_description_length,
-                sp.product_photos_qty,
-                sp.product_weight_g,
-                sp.product_length_cm,
-                sp.product_height_cm,
-                sp.product_width_cm
-FROM SILVER.PRODUCTS AS sp 
-INNER JOIN product_keys as pk 
-ON
-pk.product_id = sp.product_id;
+    PK.PRODUCT_KEY,
+    SP.PRODUCT_ID,
+    SP.PRODUCT_CATEGORY_NAME,
+    SP.PRODUCT_NAME_LENGTH,
+    SP.PRODUCT_DESCRIPTION_LENGTH,
+    SP.PRODUCT_PHOTOS_QTY,
+    SP.PRODUCT_WEIGHT_G,
+    SP.PRODUCT_LENGTH_CM,
+    SP.PRODUCT_HEIGHT_CM,
+    SP.PRODUCT_WIDTH_CM
+FROM SILVER.PRODUCTS SP
+INNER JOIN PRODUCT_KEYS PK
+    ON SP.PRODUCT_ID = PK.PRODUCT_ID;
 
--- =============
--- Seller Key
--- =============
-CREATE OR REPLACE SEQUENCE seller_key_seq
+-- ==========================================================
+-- SELLER SURROGATE KEY
+-- ==========================================================
+
+CREATE OR REPLACE SEQUENCE SELLER_KEY_SEQ
 START = 1
 INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS seller_keys AS
-
+CREATE OR REPLACE TABLE SELLER_KEYS AS
 SELECT
-    seller_key_seq.NEXTVAL AS seller_key,
-    seller_id
+    SELLER_KEY_SEQ.NEXTVAL AS SELLER_KEY,
+    SELLER_ID
 FROM GOLD.DIM_SELLERS;
 
-CREATE TABLE IF NOT EXISTS GOLD.dim_sellers AS 
-SELECT 
-      DISTINCT 
-              sk.seller_key,
-              ss.seller_id,
-              ss.seller_zip_code_prefix,
-              ss.seller_city,
-              ss.seller_state
-FROM SILVER.SELLERS AS ss
-INNER JOIN seller_keys AS sk 
-ON 
-sk.seller_id = ss.seller_id;
--- =================================
---  FACT PAYMENTS
--- ================================
+CREATE OR REPLACE TABLE GOLD.DIM_SELLERS AS
+SELECT DISTINCT
+    SK.SELLER_KEY,
+    SS.SELLER_ID,
+    SS.SELLER_ZIP_CODE_PREFIX,
+    SS.SELLER_CITY,
+    SS.SELLER_STATE
+FROM SILVER.SELLERS SS
+INNER JOIN SELLER_KEYS SK
+    ON SS.SELLER_ID = SK.SELLER_ID;
+
+-- ==========================================================
+-- FACT PAYMENTS
+-- Grain:
+-- One payment transaction per order.
+-- ==========================================================
 
 CREATE OR REPLACE TABLE GOLD.FACT_PAYMENTS AS
 
 SELECT
+    SP.ORDER_ID,
+    SP.PAYMENT_SEQUENTIAL,
 
-    sp.order_id,
-    sp.payment_sequential,
-    ck.customer_key,
-    so.order_status,
-    sp.payment_type,
-    sp.payment_installments,
-    so.order_purchase_timestamp,
-    sp.payment_value
+    -- Foreign Key
+    CK.CUSTOMER_KEY,
 
-FROM SILVER.ORDER_PAYMENTS AS sp
+    -- Attributes
+    SO.ORDER_STATUS,
+    SP.PAYMENT_TYPE,
+    SP.PAYMENT_INSTALLMENTS,
+    SO.ORDER_PURCHASE_TIMESTAMP,
 
-INNER JOIN SILVER.ORDERS AS so
-    ON sp.order_id = so.order_id
+    -- Measure
+    SP.PAYMENT_VALUE
 
-INNER JOIN CUSTOMER_KEYS AS ck
-    ON so.customer_id = ck.customer_id;
+FROM SILVER.ORDER_PAYMENTS SP
 
--- ======================
--- FACT_SALES
--- ======================
+INNER JOIN SILVER.ORDERS SO
+    ON SP.ORDER_ID = SO.ORDER_ID
+
+INNER JOIN CUSTOMER_KEYS CK
+    ON SO.CUSTOMER_ID = CK.CUSTOMER_ID;
+
+-- ==========================================================
+-- FACT SALES
+-- Grain:
+-- One row per order item.
+-- ==========================================================
 
 CREATE OR REPLACE TABLE GOLD.FACT_SALES AS
 
 SELECT
 
-    oi.order_id,
-    oi.order_item_id,
-    ck.customer_id,
-    pk.product_id,
-    sk.seller_id,
-    o.order_status,
-    o.order_purchase_timestamp,
-    oi.shipping_limit_date,
-    o.order_estimated_delivery_date,
-    o.order_delivered_carrier_date,
-    o.order_delivered_customer_date,
-    oi.price AS sales_amount,
-    oi.freight_value AS shipping_cost
+    -- Degenerate Dimension
+    OI.ORDER_ID,
+    OI.ORDER_ITEM_ID,
 
-FROM SILVER.ORDER_ITEMS AS oi
-INNER JOIN SILVER.ORDERS AS o
-ON 
-oi.order_id = o.order_id
-INNER JOIN CUSTOMER_KEYS AS ck
-ON
-o.customer_id = ck.customer_id
-INNER JOIN product_keys AS pk 
-ON 
-oi.product_id = pk.product_id 
-INNER JOIN  seller_keys  AS sk 
-ON 
-oi.seller_id = sk.seller_id;
+    -- Foreign Keys
+    CK.CUSTOMER_KEY,
+    PK.PRODUCT_KEY,
+    SK.SELLER_KEY,
 
+    -- Transaction Attributes
+    O.ORDER_STATUS,
+    O.ORDER_PURCHASE_TIMESTAMP,
+    OI.SHIPPING_LIMIT_DATE,
 
+    -- Delivery Information
+    O.ORDER_ESTIMATED_DELIVERY_DATE,
+    O.ORDER_DELIVERED_CARRIER_DATE,
+    O.ORDER_DELIVERED_CUSTOMER_DATE,
+
+    -- Measures
+    OI.PRICE AS SALES_AMOUNT,
+    OI.FREIGHT_VALUE AS SHIPPING_COST
+
+FROM SILVER.ORDER_ITEMS OI
+
+INNER JOIN SILVER.ORDERS O
+    ON OI.ORDER_ID = O.ORDER_ID
+
+INNER JOIN CUSTOMER_KEYS CK
+    ON O.CUSTOMER_ID = CK.CUSTOMER_ID
+
+INNER JOIN PRODUCT_KEYS PK
+    ON OI.PRODUCT_ID = PK.PRODUCT_ID
+
+INNER JOIN SELLER_KEYS SK
+    ON OI.SELLER_ID = SK.SELLER_ID;
+
+-- ==========================================================
+-- FACT REVIEWS
+-- Grain:
+-- One review per order.
+-- ==========================================================
 
 CREATE OR REPLACE TABLE GOLD.FACT_REVIEWS AS
 
 SELECT
 
-    sr.review_id,
-    sr.order_id,
-    ck.customer_key,
-    sr.review_creation_date,
-    sr.review_answer_timestamp,
-    sr.review_score
+    -- Composite Key
+    SR.REVIEW_ID,
+    SR.ORDER_ID,
 
-FROM SILVER.ORDER_REVIEWS AS sr
+    -- Foreign Key
+    CK.CUSTOMER_KEY,
 
-INNER JOIN SILVER.ORDERS AS so
-    ON sr.order_id = so.order_id
+    -- Attributes
+    SR.REVIEW_CREATION_DATE,
+    SR.REVIEW_ANSWER_TIMESTAMP,
 
-INNER JOIN CUSTOMER_KEYS AS ck
-    ON so.customer_id = ck.customer_id;
+    -- Measure
+    SR.REVIEW_SCORE
+
+FROM SILVER.ORDER_REVIEWS SR
+
+INNER JOIN SILVER.ORDERS SO
+    ON SR.ORDER_ID = SO.ORDER_ID
+
+INNER JOIN CUSTOMER_KEYS CK
+    ON SO.CUSTOMER_ID = CK.CUSTOMER_ID;
