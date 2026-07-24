@@ -10,6 +10,50 @@ The project showcases end-to-end data engineering concepts including data ingest
 
 ---
 # 🚀 Latest Updates
+## Version 1.4 — Automated CI/CD Deployment using GitHub Actions
+
+### ✨ New Features
+
+* Implemented a fully automated CI/CD pipeline using **GitHub Actions**.
+* Migrated deployment from **SnowSQL** to the **Snowflake CLI (`snow`)**.
+* Automated end-to-end deployment of the complete Medallion Architecture.
+* Added environment-specific deployment support (Test & Production).
+* Configured secure authentication using **GitHub Secrets**.
+* Implemented dependency-aware deployment order.
+* Added infrastructure bootstrap automation.
+* Improved deployment reliability through automated workflow execution.
+* Extended repository documentation with CI/CD architecture and deployment process.
+* Incoming:V1.4.1 - Add production layer.
+* **Note**: Please refer to deployment/ReadMe.md file for requirements.
+
+> **Pipeline Execution Order**
+>
+> Infrastructure Bootstrap
+>
+> ↓
+>
+> Raw Layer
+>
+> ↓
+>
+> Bronze Layer
+>
+> ↓
+>
+> Silver Layer
+>
+> ↓
+>
+> Gold Layer
+>
+> ↓
+>
+> Surrogate Key Generation
+>
+> ↓
+>
+> Analytics Layer (Dynamic Tables)
+
 ## Version 1.3 — Analytics Layer using Snowflake Dynamic Tables
 
 ### ✨ New Features
@@ -118,15 +162,14 @@ The following business identifiers remain as **Degenerate Dimensions** because t
 >
 > These scripts must be executed before creating the updated Gold dimension and fact tables.
 ---------------
-## 📈 Project Evolution
+| Version  | Major Update                                                                  |
+| -------- | ----------------------------------------------------------------------------- |
+| **v1.0** | Built complete Snowflake Medallion ELT Pipeline                               |
+| **v1.1** | Introduced surrogate keys and enhanced dimensional modeling                   |
+| **v1.2** | Implemented Snowflake clustering for query performance optimization           |
+| **v1.3** | Introduced Analytics Layer using Snowflake Dynamic Tables                     |
+| **v1.4** | Implemented automated CI/CD deployment using GitHub Actions and Snowflake CLI |
 
-| Version | Major Update |
-|----------|--------------|
-| **v1.0** | Built complete Snowflake Medallion ELT Pipeline |
-| **v1.1** | Introduced surrogate keys and enhanced dimensional modeling |
-| **v1.2** | Implemented Snowflake clustering for query performance optimization |
-| **v1.3** | Introduced Analytics Layer using Snowflake Dynamic Tables |
-| **v1.4** | *(Planned)* CI/CD automation using GitHub Actions |
 
 # Objectives
 
@@ -284,92 +327,75 @@ Current Dynamic Tables include:
 These datasets are designed for business intelligence, dashboarding, executive reporting, and analytical workloads.
 I might add some more typical analytics queries.
 
+# 🚀 CI/CD Pipeline
+
+This project includes a fully automated CI/CD pipeline built using GitHub Actions and the Snowflake CLI.
+
+Every push to the main branch automatically deploys the complete Snowflake ELT pipeline in dependency order.
+
+## Deployment Order
+
+Infrastructure Bootstrap
+↓
+Raw Layer
+↓
+Bronze Layer
+↓
+Silver Layer
+↓
+Gold Layer
+↓
+Surrogate Keys
+↓
+Analytics Layer
+
+## Features
+
+* Automated CI/CD Pipeline
+* GitHub Actions Workflow Automation
+* Snowflake CLI Deployment
+* Environment-specific Deployments (Test & Production)
+* Secure Authentication using GitHub Secrets
+
+
 # Project Structure
 ## Project Structure
 
 ```text
 snowflake-medallion-elt-pipeline/
 │
+├── README.md                  ⭐ Main documentation
+├── CHANGELOG.md
+├── LICENSE
+├── .gitignore
+│
 ├── .github/
 │   └── workflows/
+│       └── deploy-test.yml
 │
 ├── data/
-│   ├── README.md
-│   ├── olist_customers_dataset.csv
-│   ├── olist_geolocation_dataset.csv
-│   ├── olist_order_items_dataset.csv
-│   ├── olist_order_payments_dataset.csv
-│   ├── olist_order_reviews_dataset.csv
-│   ├── olist_orders_dataset.csv
-│   ├── olist_products_dataset.csv
-│   ├── olist_sellers_dataset.csv
-│   └── product_category_name_translation.csv
+│
+├── deployment/
+│   ├── Ecommerce_test/
+│   │   └── deploy.sql
+│   └── Ecommerce_production/
+│       
 │
 ├── docs/
-│   ├── README.md
-│   ├── architecture.md
-│   ├── data_dictionary.md
-│   └── CHANGELOG.md
+│   ├── architecture.png
+│   ├── medallion_architecture.png
+│   ├── star_schema.png
+│   ├── cicd_pipeline.png
+│   └── screenshots/
 │
-├── sql/
-│   ├── setup/
-│   │   ├── README.md
-│   │   └── setup.sql
-│   │
-│   ├── raw/
-│   │   ├── README.md
-│   │   └── raw_ingestion.sql
-│   │
-│   ├── bronze/
-│   │   ├── README.md
-│   │   ├── bronze_customers.sql
-│   │   ├── bronze_geolocation.sql
-│   │   ├── bronze_order_items.sql
-│   │   ├── bronze_order_payments.sql
-│   │   ├── bronze_order_reviews.sql
-│   │   ├── bronze_orders.sql
-│   │   ├── bronze_product_category_translation.sql
-│   │   ├── bronze_products.sql
-│   │   └── bronze_sellers.sql
-│   │
-│   ├── silver/
-│   │   ├── README.md
-│   │   ├── silver_customers.sql
-│   │   ├── silver_geolocation.sql
-│   │   ├── silver_order_items.sql
-│   │   ├── silver_order_payments.sql
-│   │   ├── silver_order_reviews.sql
-│   │   ├── silver_orders.sql
-│   │   ├── silver_product_category_translation.sql
-│   │   ├── silver_products.sql
-│   │   └── silver_sellers.sql
-│   │
-│   ├── surrogate_keys/
-│   │   ├── README.md
-│   │   ├── customer_keys.sql
-│   │   ├── product_keys.sql
-│   │   └── seller_keys.sql
-│   │
-│   ├── gold/
-│   │   ├── README.md
-│   │   ├── dim_customers.sql
-│   │   ├── dim_products.sql
-│   │   ├── dim_sellers.sql
-│   │   ├── fact_sales.sql
-│   │   ├── fact_payments.sql
-│   │   └── fact_reviews.sql
-│   │
-│   └── analytics/
-│       ├── README.md
-│       ├── monthly_sales.sql
-│       ├── monthly_growth.sql
-│       ├── yoy_growth.sql
-│       ├── top_3_monthly_products.sql
-│       └── top_3_monthly_sellers.sql
-│
-├── .gitignore
-├── LICENSE
-└── README.md
+└── sql/
+    ├── setup/
+    ├── raw/
+    ├── bronze/
+    ├── silver/
+    ├── gold/
+    ├── Key_generations/
+    └── dynamic_tables/
 ```
 
 # ELT Workflow
@@ -464,8 +490,6 @@ Additional documentation is available in the **docs/** directory.
 ---
 
 # Future Improvements
-
-- Implement CI/CD using GitHub Actions.
 - Implement automated ingestion using Snowflake Streams and Tasks.
 - Add Snowpark transformations.
 - Implement Data Quality Monitoring.

@@ -198,3 +198,4 @@ SELECT
     END AS yoy_growth_percentage
 
 FROM yoy;
+
